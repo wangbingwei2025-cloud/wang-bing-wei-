@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>筑居 · 农村自建房设计师</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1c1a16;--bg2:#252218;--bg3:#2e2a20;--bg4:#373227;
+  --gold:#d4b47a;--gold2:#ecd49e;--gold-dim:#9a8258;
+  --text:#f5efe0;--text2:#c8bca0;--text3:#8a7e68;
+  --border:rgba(212,180,122,0.2);--border2:rgba(212,180,122,0.38);
+  --green:#5aaa7a;--red:#d06a4a;--blue:#5a8ac5;--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;overflow:hidden;font-size:15px;}
+
+/* ====== PAYWALL ====== */
+#paywall{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1.5rem .5rem;animation:fadeIn .6s ease;overflow-y:auto;}
+.pw-logo{font-family:'Noto Serif SC',serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:.15em;margin-bottom:.2rem;}
+.pw-sub{font-size:.85rem;color:var(--text3);letter-spacing:.2em;margin-bottom:1.4rem;}
+.pw-hero{width:100%;max-width:360px;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;margin-bottom:1.2rem;background:var(--bg3);border:1px solid var(--border2);}
+.pw-hero canvas{width:100%;height:100%;display:block;}
+.pw-title{font-family:'Noto Serif SC',serif;font-size:1.4rem;font-weight:600;color:var(--text);text-align:center;margin-bottom:.4rem;line-height:1.5;}
+.pw-desc{font-size:.85rem;color:var(--text2);text-align:center;line-height:1.8;margin-bottom:1.2rem;max-width:320px;}
+.pw-compare{width:100%;max-width:360px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.2rem;overflow:hidden;}
+.pw-compare-row{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:.78rem;}
+.pw-compare-row.header{background:var(--bg4);padding:.5rem .75rem;color:var(--text3);font-weight:500;}
+.pw-compare-cell{padding:.5rem .75rem;border-bottom:1px solid var(--border);}
+.pw-compare-cell:nth-child(3){color:var(--gold);}
+.pw-compare-cell.check{color:var(--green);}
+.pw-compare-cell.cross{color:var(--text3);}
+.plan-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;margin-bottom:1.1rem;}
+.plan-card{border:1px solid var(--border);border-radius:var(--radius);padding:.85rem;cursor:pointer;transition:all .2s;position:relative;background:var(--bg2);}
+.plan-card.selected{border-color:var(--gold);background:rgba(212,180,122,.1);}
+.plan-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1a1814;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+.plan-name{font-size:.82rem;color:var(--text2);margin-bottom:5px;}
+.plan-price{font-family:'Noto Serif SC',serif;font-size:1.55rem;font-weight:700;color:var(--gold);}
+.plan-price span{font-size:.78rem;color:var(--text3);font-family:'Noto Sans SC',sans-serif;font-weight:400;}
+.plan-note{font-size:.75rem;color:var(--text3);margin-top:3px;}
+.btn-pay{width:100%;max-width:360px;padding:.9rem;background:var(--gold);color:#1a1814;border:none;border-radius:var(--radius);font-family:'Noto Serif SC',serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.08em;}
+.btn-pay:hover{background:var(--gold2);}
+.pw-skip{font-size:.78rem;color:var(--text3);margin-top:.6rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding-bottom:.5rem;}
+
+/* ====== APP SHELL ====== */
+#app{display:none;flex-direction:column;height:100vh;}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.1rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
+.app-logo{font-family:'Noto Serif SC',serif;font-size:1.15rem;font-weight:700;color:var(--gold);letter-spacing:.1em;}
+.app-logo span{font-size:.68rem;color:var(--text3);display:block;letter-spacing:.15em;font-family:'Noto Sans SC',sans-serif;font-weight:300;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.pro-badge{font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.06em;}
+.save-btn{font-size:.72rem;padding:5px 11px;border-radius:20px;border:1px solid var(--border2);background:none;color:var(--gold-dim);cursor:pointer;font-family:'Noto Sans SC',sans-serif;}
+.save-btn:hover{border-color:var(--gold);color:var(--gold);}
+.bottom-nav{display:flex;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
+.nav-btn{flex:1;padding:.6rem 0 .5rem;border:none;background:none;color:var(--text3);cursor:pointer;font-size:.65rem;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;font-family:'Noto Sans SC',sans-serif;}
+.nav-btn svg{width:20px;height:20px;}
+.nav-btn.active{color:var(--gold);}
+.page{display:none;flex:1;overflow-y:auto;overflow-x:hidden;}
+.page.active{display:block;}
+
+/* ====== SHARED COMPONENTS ====== */
+.section-label{font-size:.72rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:.55rem;}
+.param-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.75rem .8rem;}
+.param-item.full{grid-column:1/-1;}
+.param-label{font-size:.72rem;color:var(--text3);margin-bottom:6px;}
+.param-value{font-family:'Noto Serif SC',serif;font-size:1.15rem;color:var(--gold);font-weight:600;}
+.param-unit{font-size:.68rem;color:var(--text3);font-family:'Noto Sans SC',sans-serif;font-weight:300;}
+input[type=range]{width:100%;accent-color:var(--gold);height:3px;margin-top:6px;cursor:pointer;}
+.sel-btn{font-size:.72rem;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'Noto Sans SC',sans-serif;white-space:nowrap;}
+.sel-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,180,122,.1);}
+.select-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.metrics-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 1rem .8rem;}
+.metric-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.6rem .5rem;text-align:center;}
+.mc-val{font-family:'Noto Serif SC',serif;font-size:1.05rem;color:var(--gold);font-weight:600;}
+.mc-lbl{font-size:.74rem;color:var(--text3);margin-top:2px;}
+
+/* ====== DESIGN PAGE TABS ====== */
+.dtab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;overflow-x:auto;}
+.dtab-bar::-webkit-scrollbar{display:none;}
+.dtab{padding:.6rem .9rem;font-size:.75rem;color:var(--text3);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;font-family:'Noto Sans SC',sans-serif;flex-shrink:0;transition:color .15s;}
+.dtab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.dtab-content{display:none;overflow-y:auto;}
+.dtab-content.active{display:block;}
+.param-section{padding:1rem;}
+
+/* ====== TAGS ====== */
+.free-badge{display:inline-block;font-size:.74rem;padding:2px 7px;border-radius:8px;background:rgba(90,170,122,.18);color:#5aaa7a;border:1px solid rgba(90,170,122,.35);margin-left:5px;vertical-align:middle;}
+.pro-tag{font-size:.74rem;padding:2px 7px;border-radius:8px;background:rgba(212,180,122,.15);color:var(--gold);border:1px solid var(--border2);margin-left:5px;vertical-align:middle;}
+
+/* ====== FLOOR PLAN ====== */
+.floor-tabs{display:flex;gap:6px;margin-bottom:.6rem;}
+.floor-tab{font-size:.72rem;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;font-family:'Noto Sans SC',sans-serif;}
+.floor-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(212,180,122,.1);}
+.legend-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:.6rem;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--text3);}
+.leg-dot{width:9px;height:9px;border-radius:2px;}
+.plan-canvas-wrap{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;}
+
+/* ====== EFFECT VIEWS ====== */
+.view-tabs{display:flex;gap:6px;margin-bottom:.7rem;overflow-x:auto;padding-bottom:2px;}
+.view-tabs::-webkit-scrollbar{display:none;}
+.view-tab{font-size:.72rem;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;white-space:nowrap;font-family:'Noto Sans SC',sans-serif;flex-shrink:0;}
+.view-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(212,180,122,.1);}
+.view-canvas-wrap{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;cursor:grab;user-select:none;}
+.view-canvas-wrap:active{cursor:grabbing;}
+.view-canvas-wrap canvas{width:100%;display:block;}
+.ctrl-row{display:flex;gap:6px;margin-top:.6rem;flex-wrap:wrap;}
+.ctrl-btn{font-size:.72rem;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s;font-family:'Noto Sans SC',sans-serif;}
+.ctrl-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,180,122,.08);}
+.view-info{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.7rem;margin-top:.65rem;font-size:.75rem;color:var(--text2);line-height:1.7;}
+.range-ctrl{display:flex;align-items:center;gap:8px;margin-top:.5rem;}
+.range-ctrl label{font-size:.72rem;color:var(--text3);white-space:nowrap;min-width:44px;}
+.range-ctrl input{flex:1;}
+.range-ctrl span{font-size:.72rem;color:var(--gold-dim);min-width:34px;text-align:right;}
+.drag-hint{font-size:.68rem;color:var(--text3);margin-top:.4rem;text-align:center;opacity:.7;}
+
+/* ====== PRO DRAWINGS ====== */
+.pro-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;}
+.drawing-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.drawing-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
+.drawing-card:hover{border-color:var(--gold-dim);}
+.drawing-card canvas{width:100%;display:block;}
+.drawing-card-info{padding:.55rem .7rem;}
+.dc-title{font-size:.78rem;color:var(--text);font-weight:500;}
+.dc-sub{font-size:.67rem;color:var(--text3);margin-top:2px;}
+.lock-overlay{position:absolute;inset:0;background:rgba(28,26,22,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;backdrop-filter:blur(2px);}
+.lock-icon{font-size:1.4rem;}
+.lock-text{font-size:.68rem;color:var(--gold);text-align:center;padding:0 .4rem;}
+.unlock-btn{font-size:.68rem;padding:5px 14px;border-radius:20px;border:1px solid var(--gold-dim);background:rgba(212,180,122,.12);color:var(--gold);cursor:pointer;margin-top:2px;font-family:'Noto Sans SC',sans-serif;}
+
+/* ====== COST PAGE ====== */
+.cost-page{padding:.9rem;}
+.total-hero{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.9rem;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
+.total-hero::before{content:'';position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(212,180,122,.18) 0%,transparent 70%);}
+.th-label{font-size:.68rem;color:var(--text2);margin-bottom:4px;}
+.th-amount{font-family:'Noto Serif SC',serif;font-size:1.7rem;font-weight:700;color:var(--gold);}
+.th-unit-price{font-size:.74rem;color:var(--text3);margin-top:4px;}
+.cost-chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem;margin-bottom:.9rem;}
+.cost-chart-title{font-size:.74rem;color:var(--text3);margin-bottom:.65rem;letter-spacing:.08em;}
+.cost-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.cbr-label{font-size:.74rem;color:var(--text2);width:56px;flex-shrink:0;}
+.cbr-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;}
+.cbr-bar{height:100%;border-radius:3px;transition:width .5s ease;}
+.cbr-val{font-size:.74rem;color:var(--text3);width:52px;text-align:right;flex-shrink:0;}
+.cost-group-title{font-size:.6rem;color:var(--text3);letter-spacing:.08em;padding:.45rem 0 .2rem;border-bottom:1px solid var(--border);margin-bottom:4px;display:flex;justify-content:space-between;}
+.cost-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.ci-name{font-size:.7rem;color:var(--text2);}
+.ci-qty{font-size:.6rem;color:var(--text3);}
+.ci-amount{font-size:.7rem;color:var(--text);font-weight:500;}
+.cost-switch-row{display:flex;gap:6px;margin-bottom:.9rem;}
+.cost-switch-btn{flex:1;padding:.5rem;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:.65rem;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .15s;text-align:center;}
+.cost-switch-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,180,122,.10);}
+
+/* ====== MATERIAL COMPARE ====== */
+.mat-compare-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:.9rem;}
+.mat-tab-row{display:flex;border-bottom:1px solid var(--border);}
+.mat-tab{flex:1;padding:.5rem;font-size:.74rem;color:var(--text3);cursor:pointer;border:none;background:none;font-family:'Noto Sans SC',sans-serif;text-align:center;border-bottom:2px solid transparent;}
+.mat-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.mat-card{padding:.75rem;}
+.mat-option-row{display:flex;align-items:stretch;gap:8px;margin-bottom:6px;}
+.mat-option{flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:.6rem .5rem;cursor:pointer;transition:all .15s;text-align:center;}
+.mat-option.selected{border-color:var(--gold);background:rgba(212,180,122,.11);}
+.mat-opt-name{font-size:.65rem;color:var(--text);font-weight:500;margin-bottom:2px;}
+.mat-opt-price{font-size:.6rem;color:var(--gold-dim);}
+.mat-opt-note{font-size:.70rem;color:var(--text3);margin-top:3px;line-height:1.4;}
+.mat-impact{display:flex;justify-content:space-between;padding:.5rem .75rem;background:rgba(212,180,122,.07);border-top:1px solid var(--border);font-size:.65rem;}
+.mat-impact-label{color:var(--text3);}
+.mat-impact-val{color:var(--gold);font-weight:500;}
+
+/* ====== SCHEDULE PAGE ====== */
+.schedule-page{padding:.9rem;}
+.progress-hero{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:1.1rem;margin-bottom:.9rem;}
+.ph-title{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--gold);margin-bottom:.25rem;}
+.ph-status{font-size:.68rem;color:var(--text2);margin-bottom:.75rem;}
+.overall-bar-wrap{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:.4rem;}
+.overall-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width .6s ease;}
+.ph-pct{font-size:.65rem;color:var(--text3);}
+.phase-list{display:flex;flex-direction:column;gap:8px;}
+.phase-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.75rem;}
+.phase-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;}
+.phase-name{font-size:.72rem;color:var(--text);font-weight:500;}
+.phase-status-badge{font-size:.70rem;padding:2px 8px;border-radius:10px;}
+.psb-done{background:rgba(74,154,106,.15);color:var(--green);border:1px solid rgba(74,154,106,.3);}
+.psb-active{background:rgba(212,180,122,.18);color:var(--gold);border:1px solid var(--border2);}
+.psb-pending{background:rgba(255,255,255,.04);color:var(--text3);border:1px solid var(--border);}
+.phase-bar-wrap{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:.35rem;}
+.phase-bar{height:100%;border-radius:2px;transition:width .5s ease;}
+.phase-meta{display:flex;justify-content:space-between;font-size:.6rem;color:var(--text3);}
+.phase-toggle{width:100%;margin-top:.5rem;padding:.4rem;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:.74rem;cursor:pointer;font-family:'Noto Sans SC',sans-serif;}
+.phase-toggle:hover{border-color:var(--gold-dim);color:var(--text2);}
+.phase-checklist{margin-top:.5rem;display:flex;flex-direction:column;gap:4px;}
+.phase-check{display:flex;align-items:center;gap:7px;font-size:.65rem;color:var(--text2);cursor:pointer;padding:3px 0;}
+.phase-check input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;flex-shrink:0;}
+.phase-check.done-item{color:var(--text3);text-decoration:line-through;}
+.add-note-btn{width:100%;padding:.45rem;background:none;border:1px dashed var(--border);border-radius:8px;color:var(--text3);font-size:.74rem;cursor:pointer;margin-top:6px;font-family:'Noto Sans SC',sans-serif;}
+.add-note-btn:hover{border-color:var(--gold-dim);color:var(--text2);}
+.phase-note{font-size:.65rem;color:var(--text3);font-style:italic;padding:.4rem;background:rgba(255,255,255,.02);border-radius:6px;margin-top:4px;border-left:2px solid var(--border2);}
+.schedule-summary{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem;margin-top:.9rem;}
+.sched-sum-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:.7rem;}
+.sched-sum-row:last-child{border-bottom:none;}
+
+/* ====== SAVED SCHEMES ====== */
+.schemes-page{padding:.9rem;}
+.scheme-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem;margin-bottom:.75rem;position:relative;}
+.scheme-card:hover{border-color:var(--border2);}
+.scheme-name{font-family:'Noto Serif SC',serif;font-size:.9rem;color:var(--gold);margin-bottom:.25rem;}
+.scheme-meta{font-size:.65rem;color:var(--text3);margin-bottom:.6rem;line-height:1.6;}
+.scheme-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:.6rem;}
+.sm-item{background:var(--bg4);border-radius:8px;padding:.4rem .5rem;text-align:center;}
+.sm-val{font-size:.82rem;color:var(--text);font-weight:500;}
+.sm-lbl{font-size:.68rem;color:var(--text3);margin-top:2px;}
+.scheme-btns{display:flex;gap:6px;}
+.scheme-btn{flex:1;padding:.4rem;border-radius:8px;font-size:.65rem;cursor:pointer;font-family:'Noto Sans SC',sans-serif;border:1px solid var(--border);background:none;color:var(--text2);transition:all .15s;}
+.scheme-btn.primary{border-color:var(--gold-dim);color:var(--gold);background:rgba(212,180,122,.10);}
+.scheme-btn:hover{border-color:var(--gold-dim);}
+.scheme-delete{position:absolute;top:.75rem;right:.75rem;font-size:1rem;color:var(--text3);cursor:pointer;line-height:1;background:none;border:none;}
+.new-scheme-btn{width:100%;padding:.8rem;border:1px dashed var(--border2);border-radius:var(--radius);background:none;color:var(--gold-dim);font-family:'Noto Serif SC',serif;font-size:.85rem;cursor:pointer;transition:all .2s;margin-bottom:.75rem;}
+.new-scheme-btn:hover{border-color:var(--gold);color:var(--gold);}
+.compare-bar{position:sticky;bottom:0;background:var(--bg2);border-top:1px solid var(--border2);padding:.65rem .9rem;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.compare-bar span{font-size:.68rem;color:var(--text2);}
+.compare-btn{padding:.5rem 1.1rem;border-radius:20px;background:var(--gold);color:#1a1814;border:none;font-size:.68rem;font-weight:600;cursor:pointer;font-family:'Noto Serif SC',serif;}
+
+/* ====== SPEC PAGE ====== */
+.spec-page{padding:.9rem;}
+.spec-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;overflow:hidden;}
+.spec-card-title{padding:.65rem .9rem;font-size:.74rem;color:var(--gold);letter-spacing:.1em;border-bottom:1px solid var(--border);font-weight:500;display:flex;justify-content:space-between;align-items:center;}
+.spec-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px .9rem;border-bottom:1px solid rgba(255,255,255,.03);gap:.9rem;}
+.spec-row:last-child{border-bottom:none;}
+.sr-label{font-size:.68rem;color:var(--text3);flex-shrink:0;}
+.sr-val{font-size:.68rem;color:var(--text);text-align:right;}
+.mat-spec-row{display:flex;align-items:center;padding:7px .9rem;border-bottom:1px solid rgba(255,255,255,.03);gap:9px;}
+.mat-spec-row:last-child{border-bottom:none;}
+.msn{font-size:.68rem;color:var(--text2);width:64px;flex-shrink:0;}
+.msb{flex:1;height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+.msbf{height:100%;border-radius:2px;background:var(--gold-dim);}
+.msv{font-size:.65rem;color:var(--text3);text-align:right;min-width:80px;}
+
+/* ====== AI CHAT ====== */
+.chat-page{display:flex;flex-direction:column;height:100%;}
+.chat-messages{flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:.75rem;}
+.chat-msg{display:flex;gap:.6rem;align-items:flex-start;}
+.chat-msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600;}
+.avatar-ai{background:rgba(212,180,122,.22);color:var(--gold);border:1px solid var(--border2);}
+.avatar-user{background:rgba(74,122,181,.2);color:var(--blue);border:1px solid rgba(74,122,181,.3);}
+.msg-bubble{max-width:80%;padding:.6rem .8rem;border-radius:10px;font-size:.72rem;line-height:1.65;}
+.bubble-ai{background:var(--bg3);border:1px solid var(--border);color:var(--text2);}
+.bubble-user{background:rgba(212,180,122,.18);border:1px solid var(--border2);color:var(--text);}
+.msg-time{font-size:.70rem;color:var(--text3);margin-top:4px;}
+.chat-input-wrap{border-top:1px solid var(--border);padding:.65rem .9rem;background:var(--bg2);display:flex;gap:8px;align-items:flex-end;}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.55rem .75rem;color:var(--text);font-size:.72rem;font-family:'Noto Sans SC',sans-serif;resize:none;min-height:36px;max-height:90px;}
+.chat-input:focus{outline:none;border-color:var(--gold-dim);}
+.chat-send{padding:.5rem .9rem;background:var(--gold);color:#1a1814;border:none;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Noto Serif SC',serif;flex-shrink:0;}
+.chat-send:hover{background:var(--gold2);}
+.quick-questions{padding:.5rem .9rem .25rem;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);background:var(--bg2);}
+.qq-btn{font-size:.6rem;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;white-space:nowrap;font-family:'Noto Sans SC',sans-serif;}
+.qq-btn:hover{border-color:var(--gold-dim);color:var(--text2);}
+.typing-indicator{display:flex;gap:4px;align-items:center;padding:.5rem .7rem;}
+.typing-dot{width:5px;height:5px;background:var(--gold-dim);border-radius:50%;animation:bounce .8s infinite;}
+.typing-dot:nth-child(2){animation-delay:.15s;}
+.typing-dot:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.chat-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:2rem;gap:.75rem;text-align:center;}
+.chat-locked-icon{font-size:2.5rem;opacity:.4;}
+.chat-locked-title{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--gold);}
+.chat-locked-desc{font-size:.72rem;color:var(--text3);line-height:1.7;max-width:280px;}
+.chat-unlock-btn{padding:.6rem 1.5rem;background:var(--gold);color:#1a1814;border:none;border-radius:20px;font-family:'Noto Serif SC',serif;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:.25rem;}
+
+/* ====== MODALS ====== */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.82);display:flex;align-items:flex-end;justify-content:center;}
+.modal-sheet{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:88vh;display:flex;flex-direction:column;animation:slideUp .3s ease;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.1rem;border-bottom:1px solid var(--border);}
+.modal-title{font-family:'Noto Serif SC',serif;font-size:.95rem;color:var(--gold);}
+.modal-close{font-size:1.1rem;color:var(--text3);cursor:pointer;background:none;border:none;padding:0 4px;}
+.modal-body{flex:1;overflow-y:auto;padding:.9rem 1.1rem;}
+.modal-canvas-wrap{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:.9rem;}
+.modal-canvas-wrap canvas{width:100%;display:block;}
+.modal-specs{display:flex;flex-direction:column;}
+.ms-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.7rem;}
+.ms-label{color:var(--text3);}
+.ms-val{color:var(--text);font-weight:500;}
+.modal-dl-btn{width:100%;margin-top:.9rem;padding:.75rem;background:var(--gold);color:#1a1814;border:none;border-radius:var(--radius);font-family:'Noto Serif SC',serif;font-size:.88rem;font-weight:700;cursor:pointer;}
+.compare-modal .modal-sheet{max-height:95vh;}
+.compare-table{width:100%;border-collapse:collapse;font-size:.68rem;}
+.compare-table th{padding:.5rem .6rem;border-bottom:1px solid var(--border);color:var(--text3);font-weight:500;text-align:left;}
+.compare-table th:not(:first-child){text-align:center;color:var(--gold);}
+.compare-table td{padding:.5rem .6rem;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text2);}
+.compare-table td:not(:first-child){text-align:center;color:var(--text);}
+.compare-table tr.highlight td{background:rgba(212,180,122,.07);}
+.name-input-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.6rem .8rem;margin-bottom:.75rem;}
+.name-input{background:none;border:none;color:var(--text);font-size:.82rem;width:100%;font-family:'Noto Sans SC',sans-serif;}
+.name-input:focus{outline:none;}
+.name-input::placeholder{color:var(--text3);}
+
+/* ====== REPORT PAGE ====== */
+.report-page{padding:.9rem;}
+.report-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:.75rem;}
+.report-title{font-family:'Noto Serif SC',serif;font-size:.95rem;color:var(--gold);margin-bottom:.25rem;}
+.report-desc{font-size:.68rem;color:var(--text3);line-height:1.7;margin-bottom:.75rem;}
+.btn-report{width:100%;padding:.7rem;border:1px solid var(--gold-dim);border-radius:10px;background:rgba(212,180,122,.10);color:var(--gold);font-family:'Noto Serif SC',serif;font-size:.82rem;cursor:pointer;transition:all .2s;}
+.check-item{display:flex;align-items:flex-start;gap:7px;font-size:.7rem;color:var(--text2);line-height:1.6;margin-bottom:5px;}
+.check-icon{width:15px;height:15px;border-radius:50%;border:1px solid var(--gold-dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;margin-top:3px;}
+.check-icon.done{border-color:var(--gold);color:var(--gold);}
+.regulation-item{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:.7rem;color:var(--text2);line-height:1.6;}
+.regulation-item strong{color:var(--gold);}
+.regulation-item:last-child{border-bottom:none;}
+
+/* ====== TOAST ====== */
+.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1a1814;padding:7px 16px;border-radius:20px;font-size:.75rem;font-weight:500;z-index:9999;animation:fadeIn .3s ease;pointer-events:none;white-space:nowrap;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- ====== PAYWALL ====== -->
+<div id="paywall">
+  <div class="pw-logo">筑 居</div>
+  <div class="pw-sub">RURAL HOUSE DESIGNER PRO</div>
+  <div class="pw-hero"><canvas id="pwCanvas"></canvas></div>
+  <div class="pw-title">农村自建房<br>专业设计与造价系统</div>
+  <div class="pw-desc">效果图预览 · 专业图纸 · 精准造价 · AI 顾问 · 施工管理</div>
+  <div class="pw-compare">
+    <div class="pw-compare-row header">
+      <div class="pw-compare-cell">功能</div>
+      <div class="pw-compare-cell">免费版</div>
+      <div class="pw-compare-cell">PRO版</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">基本参数设计</div>
+      <div class="pw-compare-cell check">✓</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">平面图 / 效果图</div>
+      <div class="pw-compare-cell check">✓</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">造价粗估</div>
+      <div class="pw-compare-cell check">✓</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">专业图纸（8类）</div>
+      <div class="pw-compare-cell cross">—</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">建材对比选型</div>
+      <div class="pw-compare-cell cross">—</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">施工进度管理</div>
+      <div class="pw-compare-cell cross">—</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell">方案收藏对比</div>
+      <div class="pw-compare-cell cross">—</div>
+      <div class="pw-compare-cell check">✓</div>
+    </div>
+    <div class="pw-compare-row">
+      <div class="pw-compare-cell" style="border-bottom:none;">AI 建筑顾问</div>
+      <div class="pw-compare-cell cross" style="border-bottom:none;">—</div>
+      <div class="pw-compare-cell check" style="border-bottom:none;">✓ 无限</div>
+    </div>
+  </div>
+  <div class="plan-cards">
+    <div class="plan-card" id="plan-month" onclick="selectPlan('month')">
+      <div class="plan-name">月度会员</div>
+      <div class="plan-price">¥28<span>/月</span></div>
+      <div class="plan-note">随时可取消</div>
+    </div>
+    <div class="plan-card selected" id="plan-year" onclick="selectPlan('year')">
+      <div class="plan-badge">推荐 · 省67%</div>
+      <div class="plan-name">年度会员</div>
+      <div class="plan-price">¥9.3<span>/月</span></div>
+      <div class="plan-note">¥112/年，一次付清</div>
+    </div>
+  </div>
+  <button class="btn-pay" onclick="purchase()">立即开通 PRO 会员</button>
+  <div class="pw-skip" onclick="enterApp(true)">先免费体验（设计+效果图可用）</div>
+</div>
+
+<!-- ====== MAIN APP ====== -->
+<div id="app">
+  <div class="app-header">
+    <div class="app-logo">筑居<span>RURAL HOUSE DESIGNER</span></div>
+    <div class="header-right">
+      <button class="save-btn" onclick="saveScheme()">存方案</button>
+      <div class="pro-badge" id="memberBadge">FREE</div>
+    </div>
+  </div>
+
+  <!-- DESIGN PAGE -->
+  <div class="page active" id="page-design">
+    <div class="dtab-bar">
+      <button class="dtab active" onclick="switchDTab('params')">基本参数</button>
+      <button class="dtab" onclick="switchDTab('floorplan')">平面布局</button>
+      <button class="dtab" onclick="switchDTab('effects')">效果图<span class="free-badge">免费</span></button>
+      <button class="dtab" onclick="switchDTab('drawings')">图纸<span class="pro-tag">PRO</span></button>
+    </div>
+
+    <!-- PARAMS TAB -->
+    <div class="dtab-content active" id="dtab-params">
+      <div class="param-section">
+        <div class="section-label">宅基地</div>
+        <div class="param-grid">
+          <div class="param-item"><div class="param-label">宅基地宽度</div><div class="param-value" id="v-w">12 <span class="param-unit">米</span></div><input type="range" id="s-w" min="6" max="25" value="12" step="0.5" oninput="onInput()"></div>
+          <div class="param-item"><div class="param-label">宅基地深度</div><div class="param-value" id="v-d">15 <span class="param-unit">米</span></div><input type="range" id="s-d" min="8" max="40" value="15" step="0.5" oninput="onInput()"></div>
+          <div class="param-item"><div class="param-label">建筑层数</div><div class="param-value" id="v-f">2 <span class="param-unit">层</span></div><input type="range" id="s-f" min="1" max="3" value="2" step="1" oninput="onInput()"></div>
+          <div class="param-item"><div class="param-label">层高</div><div class="param-value" id="v-h">3.0 <span class="param-unit">米</span></div><input type="range" id="s-h" min="2.8" max="3.6" value="3.0" step="0.1" oninput="onInput()"></div>
+        </div>
+        <div class="section-label">结构风格</div>
+        <div class="param-grid">
+          <div class="param-item full"><div class="param-label">结构形式</div><div class="select-row"><button class="sel-btn" id="st-brick" onclick="selStruct('brick')">砖混结构</button><button class="sel-btn active" id="st-frame" onclick="selStruct('frame')">框架结构</button><button class="sel-btn" id="st-light" onclick="selStruct('light')">轻钢结构</button></div></div>
+          <div class="param-item full"><div class="param-label">建筑风格</div><div class="select-row"><button class="sel-btn" id="sy-simple" onclick="selStyle('simple')">简约现代</button><button class="sel-btn active" id="sy-chinese" onclick="selStyle('chinese')">新中式</button><button class="sel-btn" id="sy-european" onclick="selStyle('european')">欧式</button></div></div>
+          <div class="param-item full"><div class="param-label">屋顶形式</div><div class="select-row"><button class="sel-btn" id="ro-flat" onclick="selRoof('flat')">平屋顶</button><button class="sel-btn active" id="ro-slope" onclick="selRoof('slope')">双坡顶</button><button class="sel-btn" id="ro-hip" onclick="selRoof('hip')">四坡顶</button></div></div>
+          <div class="param-item full"><div class="param-label">装修档次</div><div class="select-row"><button class="sel-btn" id="dc-basic" onclick="selDecor('basic')">简装 500元/㎡</button><button class="sel-btn active" id="dc-mid" onclick="selDecor('mid')">中装 800元/㎡</button><button class="sel-btn" id="dc-high" onclick="selDecor('high')">精装 1200元/㎡</button></div></div>
+          <div class="param-item full"><div class="param-label">所在地区</div><div class="select-row"><button class="sel-btn" id="rg-north" onclick="selRegion('north')">华北</button><button class="sel-btn active" id="rg-east" onclick="selRegion('east')">华东</button><button class="sel-btn" id="rg-south" onclick="selRegion('south')">华南</button><button class="sel-btn" id="rg-west" onclick="selRegion('west')">西部</button></div></div>
+        </div>
+      </div>
+      <div class="metrics-strip">
+        <div class="metric-card"><div class="mc-val" id="m-fp">—</div><div class="mc-lbl">占地㎡</div></div>
+        <div class="metric-card"><div class="mc-val" id="m-tot">—</div><div class="mc-lbl">总面积㎡</div></div>
+        <div class="metric-card"><div class="mc-val" id="m-far">—</div><div class="mc-lbl">容积率</div></div>
+        <div class="metric-card"><div class="mc-val" id="m-den">—</div><div class="mc-lbl">建筑密度</div></div>
+      </div>
+    </div>
+
+    <!-- FLOOR PLAN TAB -->
+    <div class="dtab-content" id="dtab-floorplan">
+      <div style="padding:.9rem;">
+        <div class="floor-tabs" id="floorTabs"></div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="leg-dot" style="background:#4A7FB5;"></div>卧室</div>
+          <div class="legend-item"><div class="leg-dot" style="background:#5a9966;"></div>客厅/餐厅</div>
+          <div class="legend-item"><div class="leg-dot" style="background:#c87d3a;"></div>厨卫</div>
+          <div class="legend-item"><div class="leg-dot" style="background:#6a6558;"></div>楼道</div>
+          <div class="legend-item"><div class="leg-dot" style="background:#4a6a40;"></div>院落</div>
+        </div>
+        <div class="plan-canvas-wrap"><canvas id="planCanvas" style="width:100%;display:block;"></canvas></div>
+        <div style="margin-top:.6rem;font-size:.65rem;color:var(--text3);line-height:1.6;">· 布局根据宅基地尺寸自动生成，仅供参考<br>· 调整「基本参数」中的尺寸、层数实时更新</div>
+      </div>
+    </div>
+
+    <!-- EFFECTS TAB (FREE) -->
+    <div class="dtab-content" id="dtab-effects">
+      <div style="padding:.9rem;">
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="switchView('exterior')">方案效果图</button>
+          <button class="view-tab" onclick="switchView('sunlight')">日照分析图</button>
+          <button class="view-tab" onclick="switchView('interior')">室内布局图</button>
+        </div>
+        <div id="view-exterior">
+          <div class="view-canvas-wrap"><canvas id="extCanvas" height="230"></canvas></div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn active" id="ev-south" onclick="setAngle('south')">南立面</button>
+            <button class="ctrl-btn" id="ev-east" onclick="setAngle('east')">东立面</button>
+            <button class="ctrl-btn" id="ev-north" onclick="setAngle('north')">北立面</button>
+            <button class="ctrl-btn" id="ev-iso" onclick="setAngle('iso')">鸟瞰</button>
+          </div>
+          <div class="ctrl-row" style="margin-top:5px;">
+            <button class="ctrl-btn active" id="ev-day" onclick="setTod('day')">白天</button>
+            <button class="ctrl-btn" id="ev-dusk" onclick="setTod('dusk')">黄昏</button>
+            <button class="ctrl-btn" id="ev-night" onclick="setTod('night')">夜晚</button>
+          </div>
+          <div class="view-info">拖动切换视角与时间段，预览建筑外观效果。风格、屋顶、层数改变后实时更新。</div>
+        </div>
+        <div id="view-sunlight" style="display:none;">
+          <div class="view-canvas-wrap"><canvas id="sunCanvas" height="220"></canvas></div>
+          <div class="range-ctrl"><label>季节</label><input type="range" id="sun-season" min="0" max="3" value="0" step="1" oninput="drawSunlight()"><span id="sun-season-lbl">春分</span></div>
+          <div class="range-ctrl"><label>时刻</label><input type="range" id="sun-hour" min="6" max="18" value="12" step="0.5" oninput="drawSunlight()"><span id="sun-hour-lbl">12:00</span></div>
+          <div class="view-info">显示不同季节、时刻下建筑阴影投射，辅助判断采光和间距设计。</div>
+        </div>
+        <div id="view-interior" style="display:none;">
+          <div class="view-tabs" style="margin-bottom:.55rem;">
+            <button class="view-tab active" onclick="switchRoom('living')">客厅</button>
+            <button class="view-tab" onclick="switchRoom('master')">主卧</button>
+            <button class="view-tab" onclick="switchRoom('kitchen')">厨房</button>
+            <button class="view-tab" onclick="switchRoom('bathroom')">卫生间</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:.6rem;">
+            <button class="ctrl-btn active" id="ivm-plan" onclick="setIntViewMode('plan')">平面布置图</button>
+            <button class="ctrl-btn" id="ivm-persp" onclick="setIntViewMode('perspective')">透视效果图</button>
+          </div>
+          <div class="view-canvas-wrap"><canvas id="intCanvas" height="230"></canvas></div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn active" id="ir-basic" onclick="setIntStyle('basic')">简装风</button>
+            <button class="ctrl-btn" id="ir-mid" onclick="setIntStyle('mid')">新中式</button>
+            <button class="ctrl-btn" id="ir-modern" onclick="setIntStyle('modern')">现代风</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRAWINGS TAB (PRO) -->
+    <div class="dtab-content" id="dtab-drawings">
+      <div style="padding:.9rem;">
+        <div class="pro-section-header">
+          <span style="font-size:.62rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;">专业工程图纸</span>
+          <span class="pro-tag" style="margin-left:0;">PRO 专属 · 可下载 DWG/PDF</span>
+        </div>
+        <div style="font-size:.67rem;color:var(--text3);margin-bottom:.8rem;line-height:1.6;">符合国标 GB50096 的专业图纸，可直接用于施工队报价和乡镇规划审批报备。</div>
+        <div class="drawing-grid" id="drawingGrid"></div>
+      </div>
+    </div>
+  </div><!-- /page-design -->
+
+  <!-- COST PAGE -->
+  <div class="page" id="page-cost">
+    <div class="cost-page">
+      <div class="total-hero">
+        <div><div class="th-label">预计总造价</div><div class="th-amount" id="t-total">—</div><div class="th-unit-price" id="t-unit">综合单价 — 元/㎡</div></div>
+        <div style="text-align:right;"><div style="font-size:.6rem;color:var(--text3);">浮动范围 ±15%</div><div style="font-size:.58rem;color:var(--text3);margin-top:3px;">以实际施工为准</div></div>
+      </div>
+      <div class="cost-switch-row">
+        <button class="cost-switch-btn active" id="csb-breakdown" onclick="switchCostView('breakdown')">分项清单</button>
+        <button class="cost-switch-btn" id="csb-chart" onclick="switchCostView('chart')">构成图表</button>
+        <button class="cost-switch-btn" id="csb-material" onclick="switchCostView('material')">建材选型<span class="pro-tag" style="margin-left:3px;">PRO</span></button>
+      </div>
+      <div id="cost-breakdown">
+        <div id="costList"></div>
+      </div>
+      <div id="cost-chart" style="display:none;">
+        <div class="cost-chart-wrap"><div class="cost-chart-title">各类费用占比</div><div id="costBars"></div></div>
+        <div class="cost-chart-wrap"><div class="cost-chart-title">造价构成饼图</div><canvas id="pieCanvas" height="200" style="width:100%;display:block;"></canvas></div>
+      </div>
+      <div id="cost-material" style="display:none;">
+        <div id="matCompareContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE PAGE -->
+  <div class="page" id="page-schedule">
+    <div class="schedule-page">
+      <div class="progress-hero">
+        <div class="ph-title">施工进度管理</div>
+        <div class="ph-status" id="ph-status">共 <span id="ph-phases">7</span> 个阶段 · <span id="ph-done">0</span> 个完成</div>
+        <div class="overall-bar-wrap"><div class="overall-bar" id="overall-bar" style="width:0%;"></div></div>
+        <div class="ph-pct" id="ph-pct">整体进度 0%</div>
+      </div>
+      <div class="phase-list" id="phaseList"></div>
+      <div class="schedule-summary">
+        <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;margin-bottom:.5rem;">工期汇总</div>
+        <div class="sched-sum-row"><span style="color:var(--text3);">预计总工期</span><span id="ss-total" style="color:var(--gold);font-weight:500;">—</span></div>
+        <div class="sched-sum-row"><span style="color:var(--text3);">已完成工期</span><span id="ss-done" style="color:var(--green);">0 周</span></div>
+        <div class="sched-sum-row"><span style="color:var(--text3);">剩余工期</span><span id="ss-remain" style="color:var(--text);">—</span></div>
+        <div class="sched-sum-row"><span style="color:var(--text3);">预计竣工</span><span id="ss-finish" style="color:var(--text);">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVED SCHEMES -->
+  <div class="page" id="page-schemes">
+    <div class="schemes-page" id="schemesContent">
+      <button class="new-scheme-btn" onclick="saveScheme()">+ 将当前方案存入收藏</button>
+      <div id="schemesList"></div>
+    </div>
+  </div>
+
+  <!-- SPEC PAGE -->
+  <div class="page" id="page-spec">
+    <div class="spec-page">
+      <div class="spec-card"><div class="spec-card-title"><span>建筑结构参数</span></div><div id="specRows"></div></div>
+      <div class="spec-card"><div class="spec-card-title"><span>主要建材估算</span></div><div id="matRows"></div></div>
+      <div class="spec-card"><div class="spec-card-title"><span>施工周期参考</span></div><div id="schedRows"></div></div>
+      <div class="spec-card"><div class="spec-card-title"><span>建筑规范检查</span></div><div id="regulationCheck"></div></div>
+    </div>
+  </div>
+
+  <!-- AI CHAT PAGE -->
+  <div class="page" id="page-chat" style="display:none;flex-direction:column;">
+    <div id="chatLocked" class="chat-locked" style="display:none;">
+      <div class="chat-locked-icon">🏗️</div>
+      <div class="chat-locked-title">AI 建筑顾问</div>
+      <div class="chat-locked-desc">升级 PRO 版本，获得专业建筑顾问一对一解答，涵盖结构设计、造价优化、施工工艺、审批流程等全面问题。</div>
+      <button class="chat-unlock-btn" onclick="upgradePro()">开通 PRO 解锁</button>
+    </div>
+    <div id="chatActive" style="display:none;flex-direction:column;height:100%;">
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="quick-questions">
+        <button class="qq-btn" onclick="sendQuick('框架结构和砖混结构哪个更适合农村自建房？')">结构选型建议</button>
+        <button class="qq-btn" onclick="sendQuick('如何控制自建房造价，节省成本？')">造价控制</button>
+        <button class="qq-btn" onclick="sendQuick('农村自建房审批需要哪些材料？')">审批流程</button>
+        <button class="qq-btn" onclick="sendQuick('屋顶防水怎么做才能保证30年不漏？')">防水工艺</button>
+      </div>
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chatInput" placeholder="询问建筑、造价、施工相关问题..." rows="1" onkeydown="chatKeydown(event)"></textarea>
+        <button class="chat-send" onclick="sendChat()">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nb-design" onclick="navTo('design')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>设计
+    </button>
+    <button class="nav-btn" id="nb-cost" onclick="navTo('cost')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>造价
+    </button>
+    <button class="nav-btn" id="nb-schedule" onclick="navTo('schedule')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>进度
+    </button>
+    <button class="nav-btn" id="nb-schemes" onclick="navTo('schemes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>方案
+    </button>
+    <button class="nav-btn" id="nb-spec" onclick="navTo('spec')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>规格
+    </button>
+    <button class="nav-btn" id="nb-chat" onclick="navTo('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>顾问
+    </button>
+  </div>
+</div>
+
+<!-- DRAWING MODAL -->
+<div class="modal-overlay" id="drawingModal" style="display:none;" onclick="closeModal('drawingModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header"><div class="modal-title" id="modalTitle">建筑平面图</div><button class="modal-close" onclick="document.getElementById('drawingModal').style.display='none'">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-canvas-wrap"><canvas id="modalCanvas" height="280" style="width:100%;display:block;"></canvas></div>
+      <div class="modal-specs" id="modalSpecs"></div>
+      <button class="modal-dl-btn" onclick="showToast('已加入下载队列，PDF/DWG 将发送至邮箱')">下载图纸（DWG + PDF）</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-overlay compare-modal" id="compareModal" style="display:none;" onclick="closeModal('compareModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header"><div class="modal-title">方案对比</div><button class="modal-close" onclick="document.getElementById('compareModal').style.display='none'">✕</button></div>
+    <div class="modal-body"><div id="compareContent"></div></div>
+  </div>
+</div>
+
+<!-- SAVE NAME MODAL -->
+<div class="modal-overlay" id="saveModal" style="display:none;" onclick="closeModal('saveModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:50vh;">
+    <div class="modal-header"><div class="modal-title">保存方案</div><button class="modal-close" onclick="document.getElementById('saveModal').style.display='none'">✕</button></div>
+    <div class="modal-body">
+      <div class="name-input-wrap"><input class="name-input" id="schemeName" placeholder="为这个方案起个名字..." maxlength="20"></div>
+      <div style="font-size:.68rem;color:var(--text3);margin-bottom:.9rem;line-height:1.6;">
+        当前方案：<span id="save-summary" style="color:var(--text2);"></span>
+      </div>
+      <button class="modal-dl-btn" onclick="confirmSave()">保存方案</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let S={w:12,d:15,f:2,h:3.0,struct:'frame',style:'chinese',roof:'slope',decor:'mid',region:'east'};
+let curFloor=1,extAngle='south',tod='day',intRoom='living',intStyle='basic',curView='exterior';
+let costView='breakdown', isPro=false, schemes=[], phaseData=[], selectedSchemes=[];
+
+// ===== PAYWALL =====
+function drawPWCanvas(){
+  const c=document.getElementById('pwCanvas');
+  if(!c)return;
+  const W=c.offsetWidth||360,H=c.offsetHeight||202;
+  c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#1e1c18';ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.translate(W/2,H/2+8);
+  const sc=Math.min(W,H*1.78)*0.22;
+  ctx.strokeStyle='#d4b47a';ctx.lineWidth=1;
+  // House body
+  ctx.beginPath();ctx.moveTo(-3.5*sc,.8*sc);ctx.lineTo(-3.5*sc,-.5*sc);ctx.lineTo(0,-1.8*sc);ctx.lineTo(3.5*sc,-.5*sc);ctx.lineTo(3.5*sc,.8*sc);ctx.closePath();ctx.stroke();
+  // Floor line
+  ctx.beginPath();ctx.moveTo(-3.5*sc,.8*sc);ctx.lineTo(0,0);ctx.lineTo(3.5*sc,.8*sc);ctx.stroke();
+  // Roof
+  ctx.fillStyle='rgba(212,180,122,.07)';
+  ctx.beginPath();ctx.moveTo(-3.5*sc,-.5*sc);ctx.lineTo(0,-1.8*sc);ctx.lineTo(0,-.5*sc);ctx.lineTo(-3.5*sc,.1*sc);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,-1.8*sc);ctx.lineTo(3.5*sc,-.5*sc);ctx.lineTo(3.5*sc,.1*sc);ctx.lineTo(0,-.5*sc);ctx.closePath();ctx.fillStyle='rgba(212,180,122,.05)';ctx.fill();ctx.stroke();
+  // Windows & door
+  ctx.strokeStyle='#9a8258';ctx.lineWidth=.7;
+  ctx.strokeRect(.4*sc,-.2*sc,.9*sc,.6*sc); // door
+  ctx.strokeRect(-2.8*sc,-.2*sc,.8*sc,.5*sc); // window L
+  ctx.strokeRect(2*sc,-.2*sc,.8*sc,.5*sc); // window R
+  // Grid
+  ctx.fillStyle='rgba(212,180,122,.12)';
+  for(let x=-4.5;x<=4.5;x+=.8)for(let y=-2.2;y<=1;y+=.8){ctx.beginPath();ctx.arc(x*sc,y*sc,1,0,Math.PI*2);ctx.fill();}
+  ctx.restore();
+}
+function selectPlan(p){document.getElementById('plan-month').classList.toggle('selected',p==='month');document.getElementById('plan-year').classList.toggle('selected',p==='year');}
+function purchase(){showToast('开通成功！欢迎使用筑居 PRO ✨');setTimeout(()=>enterApp(false),900);}
+function enterApp(free){
+  isPro=!free;
+  document.getElementById('paywall').style.display='none';
+  const app=document.getElementById('app');app.style.display='flex';app.style.flexDirection='column';
+  const mb=document.getElementById('memberBadge');
+  if(isPro){mb.textContent='PRO';mb.style.background='linear-gradient(135deg,#d4b47a,#ecd49e)';mb.style.color='#1e1c18';mb.style.border='none';}
+  else{mb.textContent='FREE';mb.style.cssText='font-size:.58rem;font-weight:700;padding:2px 8px;border-radius:20px;color:#6a6250;border:1px solid #3a3628;background:none;';}
+  if(isPro){document.getElementById('chatActive').style.display='flex';document.getElementById('chatLocked').style.display='none';initChat();}
+  else{document.getElementById('chatLocked').style.display='flex';document.getElementById('chatActive').style.display='none';}
+  loadSchemes();initPhases();buildDrawingGrid();update();
+}
+
+// ===== NAVIGATION =====
+function navTo(p){
+  document.querySelectorAll('.page').forEach(e=>{e.classList.remove('active');e.style.display='none';});
+  document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active'));
+  const pg=document.getElementById('page-'+p);
+  if(p==='chat'){pg.style.display='flex';}else{pg.style.display='block';}
+  pg.classList.add('active');
+  document.getElementById('nb-'+p).classList.add('active');
+  if(p==='schedule')renderPhases();
+  if(p==='schemes')renderSchemes();
+}
+function switchDTab(t){
+  document.querySelectorAll('.dtab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.dtab-content').forEach(e=>e.classList.remove('active'));
+  const idx=['params','floorplan','effects','drawings'].indexOf(t);
+  document.querySelectorAll('.dtab')[idx].classList.add('active');
+  document.getElementById('dtab-'+t).classList.add('active');
+  if(t==='floorplan')setTimeout(drawPlan,20);
+  if(t==='effects')setTimeout(()=>{if(curView==='exterior')drawExterior();else if(curView==='sunlight')drawSunlight();else drawInterior();},20);
+  if(t==='drawings')buildDrawingGrid();
+}
+function switchView(v){
+  curView=v;
+  document.querySelectorAll('#dtab-effects .view-tab').forEach((b,i)=>b.classList.toggle('active',['exterior','sunlight','interior'][i]===v));
+  ['exterior','sunlight','interior'].forEach(id=>document.getElementById('view-'+id).style.display=id===v?'block':'none');
+  setTimeout(()=>{if(v==='exterior')drawExterior();else if(v==='sunlight')drawSunlight();else drawInterior();},20);
+}
+function switchRoom(r){intRoom=r;document.querySelectorAll('#view-interior .view-tab').forEach((b,i)=>b.classList.toggle('active',['living','master','kitchen','bathroom'][i]===r));drawInterior();}
+function setIntStyle(s){intStyle=s;['basic','mid','modern'].forEach(k=>document.getElementById('ir-'+k).classList.toggle('active',k===s));drawInterior();}
+function switchCostView(v){
+  costView=v;
+  ['breakdown','chart','material'].forEach(k=>{
+    document.getElementById('csb-'+k).classList.toggle('active',k===v);
+    document.getElementById('cost-'+k).style.display=k===v?'block':'none';
+  });
+  if(v==='chart')drawPie();
+  if(v==='material')renderMatCompare();
+}
+function closeModal(id){document.getElementById(id).style.display='none';}
+
+// ===== CONTROLS =====
+function onInput(){
+  S.w=parseFloat(document.getElementById('s-w').value);S.d=parseFloat(document.getElementById('s-d').value);
+  S.f=parseInt(document.getElementById('s-f').value);S.h=parseFloat(document.getElementById('s-h').value);
+  document.getElementById('v-w').innerHTML=S.w+' <span class="param-unit">米</span>';
+  document.getElementById('v-d').innerHTML=S.d+' <span class="param-unit">米</span>';
+  document.getElementById('v-f').innerHTML=S.f+' <span class="param-unit">层</span>';
+  document.getElementById('v-h').innerHTML=S.h.toFixed(1)+' <span class="param-unit">米</span>';
+  if(curFloor>S.f)curFloor=S.f;
+  update();
+}
+function selStruct(v){S.struct=v;['brick','frame','light'].forEach(k=>document.getElementById('st-'+k).classList.toggle('active',k===v));update();}
+function selStyle(v){S.style=v;['simple','chinese','european'].forEach(k=>document.getElementById('sy-'+k).classList.toggle('active',k===v));update();}
+function selRoof(v){S.roof=v;['flat','slope','hip'].forEach(k=>document.getElementById('ro-'+k).classList.toggle('active',k===v));update();}
+function selDecor(v){S.decor=v;['basic','mid','high'].forEach(k=>document.getElementById('dc-'+k).classList.toggle('active',k===v));update();}
+function selRegion(v){S.region=v;['north','east','south','west'].forEach(k=>document.getElementById('rg-'+k).classList.toggle('active',k===v));update();}
+
+// ===== CALCULATIONS =====
+function calc(){
+  const{w,d,f,h,struct,style,roof,decor,region}=S;
+  const bw=Math.max(w-2,4),bd=Math.max(d-3,5);
+  const fp=+(bw*bd).toFixed(1),tot=+(fp*f).toFixed(1);
+  const rF={north:1.0,east:1.1,south:1.05,west:0.9}[region];
+  const sB={brick:800,frame:950,light:1100}[struct];
+  const dC={basic:500,mid:800,high:1200}[decor];
+  const sP={simple:1.0,chinese:1.08,european:1.15}[style];
+  const roofF={flat:1.0,slope:1.05,hip:1.08}[roof];
+  const baseUnit=sB*rF*sP;
+  const items=[
+    {cat:'主体结构',name:'地基基础工程',qty:fp,u:'㎡',p:Math.round(180*rF),s:Math.round(fp*180*rF)},
+    {cat:'主体结构',name:'主体框架工程',qty:tot,u:'㎡',p:Math.round(baseUnit*0.55),s:Math.round(tot*baseUnit*0.55)},
+    {cat:'主体结构',name:'屋面工程',qty:fp,u:'㎡',p:Math.round(120*roofF*rF),s:Math.round(fp*120*roofF*rF)},
+    {cat:'主体结构',name:'防水保温工程',qty:tot,u:'㎡',p:63,s:Math.round(tot*63)},
+    {cat:'装修工程',name:'门窗工程',qty:Math.round(fp*f*0.15),u:'㎡',p:Math.round(600*rF),s:Math.round(fp*f*0.15*600*rF)},
+    {cat:'装修工程',name:'外立面装饰',qty:Math.round((bw+bd)*2*h*f),u:'㎡',p:Math.round(80*sP*rF),s:Math.round((bw+bd)*2*h*f*80*sP*rF)},
+    {cat:'装修工程',name:'室内装修工程',qty:tot,u:'㎡',p:Math.round(dC*rF),s:Math.round(tot*dC*rF)},
+    {cat:'装修工程',name:'厨卫精装修',qty:1+f,u:'间',p:Math.round(6000*(dC/800)*rF),s:Math.round((1+f)*6000*(dC/800)*rF)},
+    {cat:'水电工程',name:'给排水工程',qty:tot,u:'㎡',p:Math.round(45*rF),s:Math.round(tot*45*rF)},
+    {cat:'水电工程',name:'强弱电工程',qty:tot,u:'㎡',p:Math.round(55*rF),s:Math.round(tot*55*rF)},
+    {cat:'水电工程',name:'暖通空调',qty:tot,u:'㎡',p:Math.round(30*rF),s:Math.round(tot*30*rF)},
+    {cat:'其他费用',name:'楼梯工程',qty:Math.max(0,f-1),u:'套',p:8000,s:Math.max(0,f-1)*8000},
+    {cat:'其他费用',name:'院落硬化绿化',qty:Math.round(fp*0.3),u:'㎡',p:150,s:Math.round(fp*0.3*150)},
+    {cat:'其他费用',name:'设计及管理费',qty:tot,u:'㎡',p:75,s:Math.round(tot*75)},
+  ];
+  const grand=items.reduce((a,i)=>a+i.s,0);
+  return{fp,tot,bw,bd,unit:Math.round(grand/tot),grand,items,rF,bw,bd};
+}
+function fmt(n){return Math.round(n).toLocaleString('zh-CN');}
+function fmtW(n){return n>=10000?(n/10000).toFixed(1)+'万元':fmt(n)+'元';}
+
+// ===== FLOOR ROOMS =====
+function getRooms(fl){
+  const{bw:bw2,bd:bd2,f}=S;const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  if(f===1)return[
+    {n:'客厅',x:.33,y:0,w:.67,h:.42,c:'#5a9966'},{n:'餐厅',x:.33,y:.42,w:.67,h:.28,c:'#5a9966'},
+    {n:'主卧室',x:0,y:0,w:.33,h:.45,c:'#4A7FB5'},{n:'次卧室',x:0,y:.45,w:.33,h:.35,c:'#4A7FB5'},
+    {n:'厨房',x:0,y:.8,w:.45,h:.2,c:'#c87d3a'},{n:'卫生间',x:.45,y:.8,w:.55,h:.2,c:'#c87d3a'},
+    {n:'走廊',x:.33,y:.7,w:.67,h:.1,c:'#6a6558'}];
+  if(fl===1)return[
+    {n:'客厅',x:.3,y:0,w:.7,h:.45,c:'#5a9966'},{n:'餐厅',x:.3,y:.45,w:.7,h:.25,c:'#5a9966'},
+    {n:'储物间',x:0,y:0,w:.3,h:.35,c:'#6a6558'},{n:'卫生间',x:0,y:.35,w:.3,h:.2,c:'#c87d3a'},
+    {n:'厨房',x:0,y:.55,w:.3,h:.25,c:'#c87d3a'},{n:'楼梯间',x:0,y:.8,w:.3,h:.2,c:'#6a6558'},
+    {n:'大厅',x:.3,y:.7,w:.7,h:.1,c:'#6a6558'},{n:'洗衣房',x:.3,y:.8,w:.7,h:.2,c:'#c87d3a'}];
+  if(fl===2)return[
+    {n:'主卧室',x:.5,y:0,w:.5,h:.45,c:'#4A7FB5'},{n:'次卧1',x:0,y:0,w:.5,h:.45,c:'#4A7FB5'},
+    {n:'次卧2',x:0,y:.45,w:.5,h:.35,c:'#4A7FB5'},{n:'书房',x:.5,y:.45,w:.5,h:.35,c:'#4A7FB5'},
+    {n:'主卫',x:0,y:.8,w:.35,h:.2,c:'#c87d3a'},{n:'次卫',x:.35,y:.8,w:.35,h:.2,c:'#c87d3a'},
+    {n:'走廊',x:.7,y:.8,w:.3,h:.2,c:'#6a6558'}];
+  return[{n:'露台',x:0,y:0,w:.5,h:.5,c:'#4a6a40'},{n:'亲友卧',x:.5,y:0,w:.5,h:.5,c:'#4A7FB5'},
+    {n:'多功能厅',x:0,y:.5,w:.65,h:.5,c:'#5a9966'},{n:'储藏室',x:.65,y:.5,w:.35,h:.5,c:'#6a6558'}];
+}
+
+// ===== DRAW FLOOR PLAN =====
+function drawPlan(){
+  const c=document.getElementById('planCanvas');
+  const W=c.offsetWidth||340,H=260;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#1c1a16';ctx.fillRect(0,0,W,H);
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  const mg=26,sc=Math.min((W-mg*2)/bw,(H-mg*2-18)/bd);
+  const ox=mg+(W-mg*2-bw*sc)/2,oy=mg+14,px=bw*sc,py=bd*sc;
+  // Grid
+  ctx.strokeStyle='rgba(212,180,122,.06)';ctx.lineWidth=.5;
+  for(let x=0;x<=px;x+=sc){ctx.beginPath();ctx.moveTo(ox+x,oy);ctx.lineTo(ox+x,oy+py);ctx.stroke();}
+  for(let y=0;y<=py;y+=sc){ctx.beginPath();ctx.moveTo(ox,oy+y);ctx.lineTo(ox+px,oy+y);ctx.stroke();}
+  // Yard
+  if(curFloor<=1){const yh=Math.min(35,Math.max(0,(S.d-bd-3)*sc*0.45));if(yh>0){ctx.fillStyle='rgba(74,106,64,.18)';ctx.fillRect(ox,oy+py,px,yh);ctx.fillStyle='rgba(74,106,64,.5)';ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='center';ctx.fillText('前院 / 停车区',ox+px/2,oy+py+14);}}
+  // Rooms
+  getRooms(curFloor).forEach(r=>{
+    const rx=ox+r.x*px,ry=oy+r.y*py,rw=r.w*px,rh=r.h*py;
+    ctx.fillStyle=r.c+'2a';ctx.fillRect(rx,ry,rw,rh);
+    ctx.strokeStyle=r.c+'90';ctx.lineWidth=.8;ctx.strokeRect(rx+.5,ry+.5,rw-1,rh-1);
+    const area=(r.w*bw*r.h*bd).toFixed(1);
+    const fs=Math.max(8,Math.min(10,rw/6));
+    ctx.fillStyle='rgba(240,234,216,.85)';ctx.font=`500 ${fs}px Noto Sans SC,sans-serif`;ctx.textAlign='center';
+    ctx.fillText(r.n,rx+rw/2,ry+rh/2-3);
+    ctx.fillStyle='rgba(160,152,128,.7)';ctx.font=`${fs-1}px Noto Sans SC,sans-serif`;
+    ctx.fillText(area+'㎡',rx+rw/2,ry+rh/2+10);
+  });
+  // Outline
+  ctx.strokeStyle='rgba(212,180,122,.65)';ctx.lineWidth=1.5;ctx.strokeRect(ox,oy,px,py);
+  // Dims
+  ctx.fillStyle='#9a8258';ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='center';
+  ctx.fillText(bw+'m',ox+px/2,oy-5);
+  ctx.save();ctx.translate(ox-7,oy+py/2);ctx.rotate(-Math.PI/2);ctx.fillText(bd+'m',0,0);ctx.restore();
+  ctx.fillStyle='rgba(212,180,122,.5)';ctx.textAlign='right';ctx.fillText('第'+curFloor+'层',W-mg,13);
+}
+
+// ===== DRAW EXTERIOR — with drag/touch to rotate =====
+let extDrag={active:false,startX:0,startY:0,baseAzimuth:0,azimuth:0,elevation:0.35};
+function initExtDrag(){
+  const wrap=document.querySelector('.view-canvas-wrap');
+  if(!wrap||wrap._dragInit)return;
+  wrap._dragInit=true;
+  const onStart=(x,y)=>{extDrag.active=true;extDrag.startX=x;extDrag.startY=y;extDrag.baseAzimuth=extDrag.azimuth;};
+  const onMove=(x,y)=>{
+    if(!extDrag.active)return;
+    const dx=x-extDrag.startX,dy=y-extDrag.startY;
+    extDrag.azimuth=extDrag.baseAzimuth+dx*0.6;
+    extDrag.elevation=Math.max(10,Math.min(70,extDrag.elevation-dy*0.25));
+    extAngle='drag';
+    // Update active button hint
+    drawExterior();
+  };
+  const onEnd=()=>{extDrag.active=false;};
+  wrap.addEventListener('mousedown',e=>{onStart(e.clientX,e.clientY);e.preventDefault();});
+  window.addEventListener('mousemove',e=>{if(extDrag.active)onMove(e.clientX,e.clientY);});
+  window.addEventListener('mouseup',onEnd);
+  wrap.addEventListener('touchstart',e=>{if(e.touches.length===1){onStart(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
+  wrap.addEventListener('touchmove',e=>{if(e.touches.length===1){onMove(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
+  wrap.addEventListener('touchend',onEnd);
+}
+function setAngle(a){
+  extAngle=a;
+  if(a==='south'){extDrag.azimuth=0;extDrag.elevation=0;}
+  else if(a==='east'){extDrag.azimuth=90;extDrag.elevation=0;}
+  else if(a==='north'){extDrag.azimuth=180;extDrag.elevation=0;}
+  else if(a==='iso'){extDrag.azimuth=30;extDrag.elevation=45;}
+  ['south','east','north','iso'].forEach(k=>document.getElementById('ev-'+k).classList.toggle('active',k===a));
+  drawExterior();
+}
+function setTod(t){tod=t;['day','dusk','night'].forEach(k=>document.getElementById('ev-'+k).classList.toggle('active',k===t));drawExterior();}
+
+function drawExterior(){
+  const c=document.getElementById('extCanvas');if(!c)return;
+  setTimeout(initExtDrag,50);
+  const W=c.offsetWidth||340,H=230;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  // Sky
+  const skies={day:['#1e3a5f','#2e5f9a','#4882c0'],dusk:['#2a1608','#6a320a','#b85e18'],night:['#060810','#0a1222','#0e1838']};
+  const sky=skies[tod];
+  const g=ctx.createLinearGradient(0,0,0,H*.65);g.addColorStop(0,sky[0]);g.addColorStop(.5,sky[1]);g.addColorStop(1,sky[2]);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H*.65);
+  ctx.fillStyle={day:'#2d3e18',dusk:'#3a200a',night:'#0d1008'}[tod];ctx.fillRect(0,H*.65,W,H*.35);
+  if(tod==='night'){ctx.fillStyle='rgba(255,255,230,.75)';for(let i=0;i<40;i++){ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H*.55,Math.random()*1.3,0,Math.PI*2);ctx.fill();}}
+  if(tod==='day'){const sunG=ctx.createRadialGradient(W*.8,H*.12,0,W*.8,H*.12,22);sunG.addColorStop(0,'rgba(255,248,200,1)');sunG.addColorStop(1,'rgba(255,240,150,0)');ctx.fillStyle=sunG;ctx.fillRect(W*.7,0,W*.2,H*.25);}
+  else if(tod==='dusk'){const sg=ctx.createRadialGradient(W*.15,H*.5,0,W*.15,H*.5,80);sg.addColorStop(0,'rgba(255,120,30,.7)');sg.addColorStop(1,'transparent');ctx.fillStyle=sg;ctx.fillRect(0,0,W,H);}
+  else{ctx.fillStyle='rgba(210,225,255,.6)';ctx.beginPath();ctx.arc(W*.75,H*.1,10,0,Math.PI*2);ctx.fill();}
+
+  const wc={day:'#d8cca5',dusk:'#c27a48',night:'#504538'}[tod];
+  const wc2={day:'#c2b890',dusk:'#a8683a',night:'#403828'}[tod];// side face
+  const rc={day:'#8c6e4a',dusk:'#7a4225',night:'#2a2018'}[tod];
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5),fl=S.f,fh=S.h;
+
+  ctx.save();ctx.translate(W/2,H*.63);
+
+  const az=extDrag.azimuth*Math.PI/180;
+  const elDeg=extDrag.elevation;
+  const isTopView=elDeg>15; // true isometric/bird's eye
+
+  if(!isTopView){
+    // ---- ELEVATION VIEW (south/east/north) ----
+    const isSide=Math.abs(((extDrag.azimuth%360)+360)%360-90)<45||Math.abs(((extDrag.azimuth%360)+360)%360-270)<45;
+    const faceW=isSide?bd:bw;
+    const sc=Math.min(W*.38/faceW,72/fh/fl);
+    const px=faceW*sc,py=fl*fh*sc,ox=-px/2,oy=-py;
+    const isFront=Math.abs(((extDrag.azimuth%360)+360)%360)<45||Math.abs(((extDrag.azimuth%360)+360)%360-360)<45;
+    const faceColor=isFront||!isSide?wc:wc2;
+    ctx.fillStyle=faceColor;ctx.fillRect(ox,oy,px,py);
+    ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=.8;
+    for(let i=1;i<fl;i++){ctx.beginPath();ctx.moveTo(ox,oy+py/fl*i);ctx.lineTo(ox+px,oy+py/fl*i);ctx.stroke();}
+    for(let f=0;f<fl;f++){
+      const fy=oy+py/fl*f,fH=py/fl,wn=Math.max(1,Math.floor(faceW/3.5));
+      for(let w=0;w<wn;w++){
+        const wx=ox+px*(w+1)/(wn+1)-12;const wy=fy+fH*.26;
+        ctx.fillStyle=tod==='night'?'rgba(255,230,100,.65)':'rgba(190,215,245,.75)';ctx.fillRect(wx,wy,24,fH*.42);
+        ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=.5;ctx.strokeRect(wx,wy,24,fH*.42);
+        ctx.beginPath();ctx.moveTo(wx+12,wy);ctx.lineTo(wx+12,wy+fH*.42);ctx.stroke();
+      }
+    }
+    ctx.fillStyle='#6a4818';ctx.fillRect(ox+px/2-12,oy+py-fh*sc*.55,24,fh*sc*.55);
+    if(S.roof==='slope'){ctx.fillStyle=rc;ctx.beginPath();ctx.moveTo(ox-8,oy);ctx.lineTo(0,oy-fh*sc*.42);ctx.lineTo(px+8,oy);ctx.closePath();ctx.fill();ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=.7;ctx.stroke();}
+    else if(S.roof==='hip'){ctx.fillStyle=rc;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+px*.18,oy-fh*sc*.32);ctx.lineTo(ox+px*.5,oy-fh*sc*.38);ctx.lineTo(ox+px*.82,oy-fh*sc*.32);ctx.lineTo(ox+px,oy);ctx.closePath();ctx.fill();}
+    else{ctx.fillStyle=rc;ctx.fillRect(ox-5,oy-9,px+10,10);ctx.strokeStyle='rgba(0,0,0,.12)';ctx.strokeRect(ox-5,oy-9,px+10,10);}
+    ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1.2;ctx.strokeRect(ox,oy,px,py);
+  } else {
+    // ---- TRUE ISOMETRIC / BIRD'S EYE ----
+    const sc=Math.min(W*.22/bw,W*.18/bd,55);
+    // 3D projection: x=east, y=height, z=south
+    // screen: sx = (x-z)*cos30, sy = -height + (x+z)*sin30
+    const cos30=Math.cos(Math.PI/6),sin30=Math.sin(Math.PI/6);
+    const rotA=az; // use drag azimuth for rotation
+    function proj3d(x,yH,z){
+      const rx=x*Math.cos(rotA)-z*Math.sin(rotA);
+      const rz=x*Math.sin(rotA)+z*Math.cos(rotA);
+      const elR=elDeg*Math.PI/180;
+      const sx=rx*sc;
+      const sy=-yH*sc*0.55+(rz*sc)*Math.sin(elR);
+      return[sx,sy];
+    }
+    // Vertices of the box
+    const W3=bw,D3=bd,H3=fl*fh;
+    const verts={
+      b00:proj3d(0,0,0),b10:proj3d(W3,0,0),b11:proj3d(W3,0,D3),b01:proj3d(0,0,D3),
+      t00:proj3d(0,H3,0),t10:proj3d(W3,H3,0),t11:proj3d(W3,H3,D3),t01:proj3d(0,H3,D3),
+    };
+    function face(pts,color){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(...pts[0]);pts.slice(1).forEach(p=>ctx.lineTo(...p));ctx.closePath();ctx.fill();ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=.8;ctx.stroke();}
+    // Determine visible faces based on azimuth
+    const a=((rotA*180/Math.PI)%360+360)%360;
+    // Bottom face
+    face([verts.b00,verts.b10,verts.b11,verts.b01],'rgba(0,0,0,.15)');
+    // Side faces — draw back-to-front based on angle
+    if(a<90||a>=270){face([verts.b01,verts.b11,verts.t11,verts.t01],wc2);}// south
+    if(a<180){face([verts.b10,verts.b11,verts.t11,verts.t10],wc2);}// east
+    if(a>=90&&a<270){face([verts.b00,verts.b10,verts.t10,verts.t00],wc2);}// north
+    if(a>=180){face([verts.b00,verts.b01,verts.t01,verts.t00],wc);}// west
+    // Front faces (brighter)
+    if(a>=90&&a<270){face([verts.b01,verts.b11,verts.t11,verts.t01],wc);}
+    if(a>=180){face([verts.b10,verts.b11,verts.t11,verts.t10],wc);}
+    if(a<90||a>=270){face([verts.b00,verts.b10,verts.t10,verts.t00],wc);}
+    if(a<180){face([verts.b00,verts.b01,verts.t01,verts.t00],wc2);}
+    // Roof
+    if(S.roof==='slope'){
+      const ridgeY=H3+fh*.42,ridgeX=W3/2;
+      const r0=proj3d(ridgeX,ridgeY,0),r1=proj3d(ridgeX,ridgeY,D3);
+      face([verts.t00,verts.t10,r0],rc);
+      face([verts.t01,verts.t11,r1],shade(rc,-10));
+      face([verts.t00,verts.t01,r1,r0],shade(rc,8));
+      face([verts.t10,verts.t11,r1,r0],shade(rc,-5));
+    } else if(S.roof==='hip'){
+      const hY=H3+fh*.36,hw=W3*.2,hd=D3*.2;
+      const hr00=proj3d(hw,hY,hd),hr10=proj3d(W3-hw,hY,hd),hr11=proj3d(W3-hw,hY,D3-hd),hr01=proj3d(hw,hY,D3-hd);
+      [[[verts.t00,verts.t10,hr10,hr00],8],[[verts.t01,verts.t11,hr11,hr01],-10],
+       [[verts.t00,verts.t01,hr01,hr00],-5],[[verts.t10,verts.t11,hr11,hr10],-15],
+       [[hr00,hr10,hr11,hr01],12]].forEach(([pts,d])=>face(pts,shade(rc,d)));
+    } else {
+      face([verts.t00,verts.t10,verts.t11,verts.t01],shade(rc,5));
+    }
+    // Windows on front face
+    const frontFaceVertZ=a<180?0:D3;const wfz=frontFaceVertZ===0?0:D3;
+    for(let f=0;f<fl;f++){
+      const wY=f*fh+fh*.3,wH=fh*.35,wCount=Math.max(1,Math.floor(W3/3.5));
+      for(let wi=0;wi<wCount;wi++){
+        const wX=W3*(wi+1)/(wCount+1)-.3;
+        const wp0=proj3d(wX,wY,wfz),wp1=proj3d(wX+.6,wY,wfz),wp2=proj3d(wX+.6,wY+wH,wfz),wp3=proj3d(wX,wY+wH,wfz);
+        ctx.fillStyle=tod==='night'?'rgba(255,230,100,.6)':'rgba(190,215,245,.6)';
+        ctx.beginPath();ctx.moveTo(...wp0);ctx.lineTo(...wp1);ctx.lineTo(...wp2);ctx.lineTo(...wp3);ctx.closePath();ctx.fill();
+      }
+    }
+    // Ground shadow
+    ctx.fillStyle='rgba(0,0,0,.18)';
+    const sh=0.3;
+    ctx.beginPath();ctx.moveTo(...proj3d(0,-0.02,0));ctx.lineTo(...proj3d(W3,-0.02,0));ctx.lineTo(...proj3d(W3+sh,-0.02,D3+sh));ctx.lineTo(...proj3d(-sh,-0.02,D3+sh));ctx.closePath();ctx.fill();
+  }
+  ctx.restore();
+
+  // Ground line
+  ctx.strokeStyle='rgba(212,180,122,.2)';ctx.lineWidth=.8;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(0,H*.65);ctx.lineTo(W,H*.65);ctx.stroke();ctx.setLineDash([]);
+
+  // Label
+  const sn={simple:'简约现代',chinese:'新中式',european:'欧式'}[S.style];
+  const angleName=isTopView?`鸟瞰 ${Math.round(extDrag.elevation)}°`:`${Math.round(((extDrag.azimuth%360)+360)%360)}° 视角`;
+  ctx.fillStyle='rgba(212,180,122,.6)';ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='right';
+  ctx.fillText(`${S.f}F·${sn}·${angleName}·${{day:'白天',dusk:'黄昏',night:'夜晚'}[tod]}`,W-8,H-6);
+  ctx.textAlign='center';ctx.fillStyle='rgba(212,180,122,.32)';ctx.font='10px Noto Sans SC,sans-serif';
+  ctx.fillText('← 拖动旋转 / 点击按钮切换视角 →',W/2,H-6);
+}
+
+// ===== SUNLIGHT =====
+function drawSunlight(){
+  const c=document.getElementById('sunCanvas');const W=c.offsetWidth||340,H=220;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');ctx.fillStyle='#141e14';ctx.fillRect(0,0,W,H);
+  const season=+document.getElementById('sun-season').value,hour=+document.getElementById('sun-hour').value;
+  document.getElementById('sun-season-lbl').textContent=['春分','夏至','秋分','冬至'][season];
+  const hh=Math.floor(hour),mm=hour%1===0?'00':'30';
+  document.getElementById('sun-hour-lbl').textContent=`${hh}:${mm}`;
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  const mg=36,sc=Math.min((W-mg*2)/S.w,(H-mg*2)/S.d);
+  const ox=mg+(W-mg*2-S.w*sc)/2,oy=mg;
+  ctx.fillStyle='rgba(74,106,64,.08)';ctx.fillRect(ox,oy,S.w*sc,S.d*sc);
+  ctx.strokeStyle='rgba(74,106,64,.25)';ctx.lineWidth=.5;
+  for(let x=0;x<=S.w;x+=3){ctx.beginPath();ctx.moveTo(ox+x*sc,oy);ctx.lineTo(ox+x*sc,oy+S.d*sc);ctx.stroke();}
+  for(let y=0;y<=S.d;y+=3){ctx.beginPath();ctx.moveTo(ox,oy+y*sc);ctx.lineTo(ox+S.w*sc,oy+y*sc);ctx.stroke();}
+  const bx=ox+(S.w-bw)/2*sc,by=oy+(S.d-bd-1)*sc;
+  ctx.fillStyle='rgba(212,180,122,.15)';ctx.fillRect(bx,by,bw*sc,bd*sc);
+  ctx.strokeStyle='rgba(212,180,122,.6)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw*sc,bd*sc);
+  const az=(hour-12)/12*Math.PI*.8,elev=[.4,.72,.4,.2][season];
+  const sLen=S.f*S.h/Math.tan(elev*Math.PI/2+.08)*sc;
+  const sdx=Math.sin(az)*sLen,sdy=Math.cos(az)*sLen*((hour>12)?1:-1);
+  ctx.fillStyle='rgba(0,0,0,.4)';
+  ctx.beginPath();ctx.moveTo(bx,by+bd*sc);ctx.lineTo(bx+bw*sc,by+bd*sc);ctx.lineTo(bx+bw*sc+sdx,by+bd*sc+sdy);ctx.lineTo(bx+sdx,by+bd*sc+sdy);ctx.closePath();ctx.fill();
+  const sunX=ox+S.w*sc*(0.5-Math.sin(az)*.3);const sunY=Math.max(oy+8,Math.min(oy+S.d*sc*.3,oy+S.d*sc*.2));
+  const sunR=Math.round(elev*70);
+  ctx.fillStyle=`rgba(255,${200+sunR},80,.8)`;ctx.beginPath();ctx.arc(sunX,sunY,7,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(255,220,80,.3)';ctx.lineWidth=.8;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(sunX,sunY);ctx.lineTo(bx+bw*sc/2,by+bd*sc);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(212,180,122,.6)';ctx.font='10px Noto Sans SC,sans-serif';
+  ['北','南','东','西'].forEach((t,i)=>{const pts=[[W/2,oy-7],[W/2,oy+S.d*sc+14],[ox+S.w*sc+14,oy+S.d*sc/2],[ox-14,oy+S.d*sc/2]];ctx.textAlign='center';ctx.fillText(t,pts[i][0],pts[i][1]);});
+  const shdLen=(sLen/sc).toFixed(1);
+  ctx.textAlign='right';ctx.fillStyle='rgba(160,152,128,.65)';
+  ctx.fillText(`阴影约 ${shdLen}m · 太阳高度角 ${Math.round(elev*90)}°`,W-6,H-6);
+}
+
+// ===== INTERIOR — dual mode: perspective view + plan view =====
+let intViewMode='plan'; // 'perspective' | 'plan'
+function setIntViewMode(m){
+  intViewMode=m;
+  document.getElementById('ivm-persp').classList.toggle('active',m==='perspective');
+  document.getElementById('ivm-plan').classList.toggle('active',m==='plan');
+  drawInterior();
+}
+
+function drawInterior(){
+  const c=document.getElementById('intCanvas');if(!c)return;
+  const W=c.offsetWidth||340,H=230;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  if(intViewMode==='plan'){drawIntPlan(ctx,W,H);}
+  else{drawIntPersp(ctx,W,H);}
+}
+
+function drawIntPlan(ctx,W,H){
+  // Top-down furniture layout plan
+  const P={basic:{bg:'#2a2520',wall:'#6a6050',floor:'#3a3328',furn:'#5a5040',acc:'#9a8860',text:'rgba(240,230,210,.85)'},
+    mid:{bg:'#2a2218',wall:'#6a5840',floor:'#3a2e20',furn:'#7a6040',acc:'#c8a060',text:'rgba(245,235,215,.9)'},
+    modern:{bg:'#28282a',wall:'#585860',floor:'#32323a',furn:'#606068',acc:'#d4b47a',text:'rgba(248,244,236,.9)'}}[intStyle];
+  ctx.fillStyle=P.bg;ctx.fillRect(0,0,W,H);
+
+  const rooms={
+    living:{w:6.0,d:5.0,name:'客 厅',furniture:[
+      {type:'sofa',x:1,y:2,w:3.5,d:0.9,label:'沙发'},
+      {type:'table',x:2,y:3.2,w:1.2,d:0.6,label:'茶几'},
+      {type:'tv',x:1,y:0.3,w:2.4,d:0.3,label:'电视柜'},
+      {type:'plant',x:5.2,y:0.5,r:0.3,label:'绿植'},
+      {type:'chair',x:5,y:2.5,w:0.8,d:0.8,label:''},
+    ]},
+    master:{w:4.5,d:4.5,name:'主卧室',furniture:[
+      {type:'bed',x:1,y:1,w:2.2,d:1.8,label:'双人床'},
+      {type:'table',x:0.2,y:1.3,w:0.5,d:0.5,label:'床头柜'},
+      {type:'table',x:3.5,y:1.3,w:0.5,d:0.5,label:'床头柜'},
+      {type:'wardrobe',x:0.2,y:0.2,w:3.5,d:0.7,label:'衣柜'},
+      {type:'desk',x:3.5,y:2.5,w:1.2,d:0.6,label:'梳妆台'},
+    ]},
+    kitchen:{w:3.5,d:4.0,name:'厨 房',furniture:[
+      {type:'counter',x:0.2,y:0.2,w:3.1,d:0.65,label:'操作台'},
+      {type:'sink',x:0.5,y:0.2,w:0.9,d:0.55,label:'水槽'},
+      {type:'stove',x:2,y:0.2,w:0.8,d:0.55,label:'灶台'},
+      {type:'fridge',x:2.8,y:0.2,w:0.7,d:0.65,label:'冰箱'},
+      {type:'counter',x:0.2,y:3.3,w:3.1,d:0.65,label:'备餐台'},
+      {type:'table',x:1,y:1.5,w:1.5,d:0.8,label:'餐桌'},
+    ]},
+    bathroom:{w:3.0,d:3.5,name:'卫生间',furniture:[
+      {type:'bath',x:0.2,y:2.0,w:1.6,d:0.8,label:'浴缸'},
+      {type:'toilet',x:2.2,y:2.0,w:0.6,d:0.7,label:'马桶'},
+      {type:'sink',x:0.2,y:0.5,w:0.8,d:0.5,label:'洗面台'},
+      {type:'shower',x:1.8,y:0.3,w:1.0,d:1.2,label:'淋浴区'},
+    ]},
+  }[intRoom];
+
+  const mg=22,sc=Math.min((W-mg*2)/rooms.w,(H-mg*2)/rooms.d);
+  const ox=mg+(W-mg*2-rooms.w*sc)/2,oy=mg+(H-mg*2-rooms.d*sc)/2;
+  const pw=rooms.w*sc,ph=rooms.d*sc;
+
+  // Floor
+  ctx.fillStyle=P.floor;ctx.fillRect(ox,oy,pw,ph);
+  // Floor tiles
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=.4;
+  const tileSize=Math.max(20,sc*0.6);
+  for(let x=ox;x<ox+pw;x+=tileSize){ctx.beginPath();ctx.moveTo(x,oy);ctx.lineTo(x,oy+ph);ctx.stroke();}
+  for(let y=oy;y<oy+ph;y+=tileSize){ctx.beginPath();ctx.moveTo(ox,y);ctx.lineTo(ox+pw,y);ctx.stroke();}
+
+  // Walls
+  const wt=8;ctx.fillStyle=P.wall;
+  ctx.fillRect(ox-wt,oy-wt,pw+wt*2,wt); // top
+  ctx.fillRect(ox-wt,oy+ph,pw+wt*2,wt); // bottom
+  ctx.fillRect(ox-wt,oy,wt,ph); // left
+  ctx.fillRect(ox+pw,oy,wt,ph); // right
+  // Door gap bottom-center
+  ctx.fillStyle=P.floor;ctx.fillRect(ox+pw/2-sc*.4,oy+ph,sc*.8,wt);
+  // Door arc
+  ctx.strokeStyle=P.acc;ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(ox+pw/2-sc*.4,oy+ph,sc*.8,Math.PI,Math.PI*1.5);ctx.stroke();
+
+  // Furniture
+  rooms.furniture.forEach(f=>{
+    const fx=ox+f.x*sc,fy=oy+f.y*sc;
+    if(f.type==='plant'||f.type==='chair'&&!f.w){
+      // circle furniture
+      const r=(f.r||0.4)*sc;
+      ctx.fillStyle={plant:'rgba(70,130,70,.7)',chair:P.furn}[f.type]||P.furn;
+      ctx.beginPath();ctx.arc(fx,fy,r,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=.7;ctx.stroke();
+      return;
+    }
+    const fw=f.w*sc,fd=f.d*sc;
+    const furnColors={
+      sofa:shade(P.furn,10),bed:'#8a7060',wardrobe:shade(P.furn,-8),
+      counter:shade(P.acc,-15),sink:'#607888',stove:'#404848',
+      fridge:shade(P.furn,15),bath:'#c8d8e8',toilet:'#d8d8d0',
+      shower:'rgba(160,200,230,.4)',desk:shade(P.furn,5),
+      table:shade(P.furn,8),chair:P.furn,
+    };
+    ctx.fillStyle=furnColors[f.type]||P.furn;
+    ctx.fillRect(fx,fy,fw,fd);
+    // Detail lines
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=.6;ctx.strokeRect(fx+1,fy+1,fw-2,fd-2);
+    // Special details
+    if(f.type==='sofa'){ctx.strokeStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.moveTo(fx+fw*.33,fy);ctx.lineTo(fx+fw*.33,fy+fd);ctx.moveTo(fx+fw*.66,fy);ctx.lineTo(fx+fw*.66,fy+fd);ctx.stroke();}
+    if(f.type==='bed'){ctx.fillStyle='rgba(240,234,220,.3)';ctx.fillRect(fx+fw*.1,fy+fd*.05,fw*.38,fd*.35);ctx.fillRect(fx+fw*.52,fy+fd*.05,fw*.38,fd*.35);}
+    if(f.type==='sink'){ctx.fillStyle='rgba(180,220,240,.5)';ctx.beginPath();ctx.ellipse(fx+fw/2,fy+fd/2,fw*.3,fd*.3,0,0,Math.PI*2);ctx.fill();}
+    if(f.type==='stove'){[fw*.25,fw*.75].forEach(dx=>[fd*.3,fd*.7].forEach(dy=>{ctx.strokeStyle='rgba(255,100,50,.6)';ctx.beginPath();ctx.arc(fx+dx,fy+dy,fw*.14,0,Math.PI*2);ctx.stroke();}));}
+    if(f.type==='toilet'){ctx.fillStyle='rgba(240,240,235,.5)';ctx.beginPath();ctx.ellipse(fx+fw/2,fy+fd*.65,fw*.38,fd*.32,0,0,Math.PI*2);ctx.fill();}
+    if(f.type==='shower'){ctx.strokeStyle='rgba(120,180,220,.5)';ctx.lineWidth=.8;ctx.strokeRect(fx,fy,fw,fd);ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+fw,fy+fd);ctx.moveTo(fx+fw,fy);ctx.lineTo(fx,fy+fd);ctx.stroke();}
+    // Label
+    if(f.label){ctx.fillStyle=P.text;ctx.font=`${Math.max(8,Math.min(11,fw/4))}px Noto Sans SC,sans-serif`;ctx.textAlign='center';ctx.fillText(f.label,fx+fw/2,fy+fd/2+3);}
+  });
+
+  // Room outline
+  ctx.strokeStyle=P.acc;ctx.lineWidth=1.5;ctx.strokeRect(ox,oy,pw,ph);
+
+  // Dimensions
+  ctx.fillStyle=P.acc;ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='center';
+  ctx.fillText(rooms.w+'m',ox+pw/2,oy-12);
+  ctx.save();ctx.translate(ox-14,oy+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(rooms.d+'m',0,0);ctx.restore();
+
+  // Room label
+  ctx.fillStyle=P.text;ctx.font='bold 11px Noto Serif SC,serif';ctx.textAlign='right';
+  ctx.fillText(rooms.name+' 平面图',W-8,H-7);
+  const sn={basic:'简装',mid:'新中式',modern:'现代'}[intStyle];
+  ctx.font='10px Noto Sans SC,sans-serif';ctx.fillStyle='rgba(212,180,122,.5)';
+  ctx.fillText(sn+' · 1:50',W-8,H-7-14);
+}
+
+function drawIntPersp(ctx,W,H){
+  const P={basic:{wall:'#c8c0a8',floor:'#8a7a58',ceil:'#d8d0b8',acc:'#7a6a48',furn:'#6a5838'},mid:{wall:'#e0d8c8',floor:'#6a4a28',ceil:'#f0e8d8',acc:'#8a6838',furn:'#5a3818'},modern:{wall:'#f0efec',floor:'#3a3428',ceil:'#f8f8f6',acc:'#d4b47a',furn:'#444038'}}[intStyle];
+  const vx=W/2,vy=H*.37,rx=W*.06,ry=H*.04,rw=W*.88,rh=H*.77;
+  ctx.fillStyle=P.wall;ctx.beginPath();ctx.moveTo(vx-75,vy-48);ctx.lineTo(vx+75,vy-48);ctx.lineTo(vx+75,vy+48);ctx.lineTo(vx-75,vy+48);ctx.closePath();ctx.fill();
+  ctx.fillStyle=shade(P.wall,-18);ctx.beginPath();ctx.moveTo(rx,ry);ctx.lineTo(vx-75,vy-48);ctx.lineTo(vx-75,vy+48);ctx.lineTo(rx,ry+rh);ctx.closePath();ctx.fill();
+  ctx.fillStyle=shade(P.wall,-10);ctx.beginPath();ctx.moveTo(rx+rw,ry);ctx.lineTo(vx+75,vy-48);ctx.lineTo(vx+75,vy+48);ctx.lineTo(rx+rw,ry+rh);ctx.closePath();ctx.fill();
+  ctx.fillStyle=P.ceil;ctx.beginPath();ctx.moveTo(rx,ry);ctx.lineTo(rx+rw,ry);ctx.lineTo(vx+75,vy-48);ctx.lineTo(vx-75,vy-48);ctx.closePath();ctx.fill();
+  const fg=ctx.createLinearGradient(rx,vy+48,rx,ry+rh);fg.addColorStop(0,P.floor);fg.addColorStop(1,shade(P.floor,-22));
+  ctx.fillStyle=fg;ctx.beginPath();ctx.moveTo(rx,ry+rh);ctx.lineTo(rx+rw,ry+rh);ctx.lineTo(vx+75,vy+48);ctx.lineTo(vx-75,vy+48);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=.5;
+  for(let i=1;i<5;i++){const t=i/5,fy=vy+48+(ry+rh-vy-48)*t,fw=75+(rw/2-75)*t;ctx.beginPath();ctx.moveTo(vx-fw,fy);ctx.lineTo(vx+fw,fy);ctx.stroke();}
+  ctx.strokeStyle='rgba(0,0,0,.1)';[[rx,ry],[rx+rw,ry],[rx,ry+rh],[rx+rw,ry+rh]].forEach(([x,y])=>{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(vx,vy);ctx.stroke();});
+  ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(rx,ry+rh-3);ctx.lineTo(vx-75,vy+48-3);ctx.lineTo(vx+75,vy+48-3);ctx.lineTo(rx+rw,ry+rh-3);ctx.stroke();
+  ({
+    living(){
+      ctx.fillStyle=P.acc;ctx.fillRect(vx-32,vy-40,64,38);ctx.fillStyle='#141414';ctx.fillRect(vx-28,vy-37,56,30);
+      ctx.fillStyle=P.furn;ctx.fillRect(vx-55,vy+16,110,24);ctx.fillRect(vx-55,vy+10,16,13);ctx.fillRect(vx+39,vy+10,16,13);
+      ctx.fillStyle=shade(P.furn,12);ctx.fillRect(vx-55,vy+16,110,5);
+      ctx.fillStyle=shade(P.furn,8);ctx.fillRect(vx-24,vy+40,48,11);
+      ctx.fillStyle=P.acc;ctx.fillRect(vx-65,vy+8,8,20);
+      ctx.fillStyle='rgba(200,180,140,.3)';ctx.fillRect(vx-73,vy-46,12,50);ctx.fillRect(vx+61,vy-46,12,50);
+      ctx.fillStyle='rgba(180,210,240,.2)';ctx.fillRect(vx-61,vy-46,50,34);ctx.fillRect(vx+11,vy-46,50,34);
+    },
+    master(){
+      ctx.fillStyle=P.furn;ctx.fillRect(vx-42,vy+8,84,30);ctx.fillStyle=shade(P.furn,18);ctx.fillRect(vx-40,vy+8,80,12);
+      ctx.fillStyle='#e8e0d0';ctx.fillRect(vx-38,vy+10,36,9);ctx.fillRect(vx+2,vy+10,36,9);
+      ctx.fillStyle=P.furn;ctx.fillRect(vx-74,vy-42,28,72);
+      ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(vx-60,vy-42);ctx.lineTo(vx-60,vy+30);ctx.stroke();
+      ctx.fillStyle=P.furn;ctx.fillRect(vx+43,vy+14,18,18);ctx.fillRect(vx-61,vy+14,18,18);
+      ctx.fillStyle=P.acc;ctx.beginPath();ctx.arc(vx+52,vy+12,5,Math.PI,0);ctx.fill();
+      ctx.fillStyle='rgba(180,210,240,.35)';ctx.fillRect(vx-20,vy-44,40,28);
+      ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.8;ctx.strokeRect(vx-20,vy-44,40,28);ctx.beginPath();ctx.moveTo(vx,vy-44);ctx.lineTo(vx,vy-16);ctx.stroke();
+    },
+    kitchen(){
+      ctx.fillStyle=P.acc;ctx.fillRect(vx-70,vy-10,140,12);ctx.fillStyle=shade(P.acc,12);ctx.fillRect(vx-70,vy-10,140,5);
+      ctx.fillStyle=shade(P.furn,-5);ctx.fillRect(vx-70,vy-44,140,30);
+      ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=.5;for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(vx-70+i*35,vy-44);ctx.lineTo(vx-70+i*35,vy-14);ctx.stroke();}
+      ctx.fillStyle='#777';ctx.fillRect(vx-52,vy-8,28,10);ctx.fillStyle='#555';ctx.fillRect(vx-50,vy-7,24,8);
+      ctx.fillStyle='#333';ctx.fillRect(vx-10,vy-8,30,10);
+      [[-2,3],[13,3],[-2,-2],[13,-2]].forEach(([dx,dy])=>{ctx.beginPath();ctx.arc(vx+dx,vy+dy,3,0,Math.PI*2);ctx.fillStyle='#222';ctx.fill();});
+      ctx.fillStyle=shade(P.furn,5);ctx.fillRect(vx+45,vy-42,22,54);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.strokeRect(vx+45,vy-42,22,54);ctx.beginPath();ctx.moveTo(vx+45,vy-14);ctx.lineTo(vx+67,vy-14);ctx.stroke();
+      ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=.4;for(let x=-70;x<70;x+=14){ctx.beginPath();ctx.moveTo(vx+x,vy-44);ctx.lineTo(vx+x,vy-10);ctx.stroke();}
+    },
+    bathroom(){
+      ctx.fillStyle='#e0eaf2';ctx.fillRect(vx-58,vy+10,52,28);ctx.strokeStyle='rgba(0,0,0,.1)';ctx.lineWidth=.8;ctx.strokeRect(vx-58,vy+10,52,28);
+      ctx.fillStyle='rgba(160,200,235,.35)';ctx.fillRect(vx-55,vy+13,46,22);
+      ctx.fillStyle='#aaa';ctx.fillRect(vx-35,vy+8,8,5);
+      ctx.fillStyle='#f0f0ec';ctx.beginPath();ctx.ellipse(vx+34,vy+26,14,18,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.08)';ctx.stroke();ctx.fillStyle='#eaeae6';ctx.fillRect(vx+20,vy+10,28,10);ctx.strokeRect(vx+20,vy+10,28,10);
+      ctx.fillStyle=P.furn;ctx.fillRect(vx-22,vy-2,30,14);
+      ctx.fillStyle='#f0f0ec';ctx.beginPath();ctx.ellipse(vx-7,vy+4,10,7,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.08)';ctx.stroke();
+      ctx.fillStyle='rgba(180,215,240,.45)';ctx.fillRect(vx-28,vy-44,32,26);ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.strokeRect(vx-28,vy-44,32,26);
+      ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.4;for(let x=-74;x<74;x+=12){ctx.beginPath();ctx.moveTo(vx+x,vy-46);ctx.lineTo(vx+x,vy+8);ctx.stroke();}
+    }
+  }[intRoom]||function(){})();
+  const rn={living:'客厅',master:'主卧室',kitchen:'厨房',bathroom:'卫生间'}[intRoom];
+  const sn={basic:'简装风',mid:'新中式',modern:'现代简约'}[intStyle];
+  ctx.fillStyle='rgba(212,180,122,.6)';ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='right';
+  ctx.fillText(`${rn}·${sn}·透视视角`,W-7,H-6);
+}
+function shade(hex,p){const n=parseInt(hex.replace('#',''),16);const r=Math.min(255,Math.max(0,(n>>16)+p)),g=Math.min(255,Math.max(0,((n>>8)&0xff)+p)),b=Math.min(255,Math.max(0,(n&0xff)+p));return'#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+
+// ===== PIE CHART =====
+function drawPie(){
+  const c=document.getElementById('pieCanvas');const W=c.offsetWidth||340,H=200;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');ctx.fillStyle='#1c1a16';ctx.fillRect(0,0,W,H);
+  const{items}=calc();const cats=[...new Set(items.map(i=>i.cat))];
+  const totals=cats.map(c=>items.filter(i=>i.cat===c).reduce((a,i)=>a+i.s,0));
+  const grand=totals.reduce((a,b)=>a+b,0);
+  const colors=['#d4b47a','#5a9966','#4A7FB5','#8a5a3a'];
+  const cx=W*.35,cy=H*.5,r=Math.min(cx,cy)*.82;
+  let ang=-Math.PI/2;
+  totals.forEach((t,i)=>{
+    const a=t/grand*Math.PI*2;
+    ctx.fillStyle=colors[i];ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,ang,ang+a);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(15,14,11,.5)';ctx.lineWidth=1.5;ctx.stroke();
+    ang+=a;
+  });
+  // Legend
+  cats.forEach((cat,i)=>{
+    const y=H*.2+i*(H*.18);
+    ctx.fillStyle=colors[i];ctx.fillRect(W*.62,y-7,10,10);
+    ctx.fillStyle='rgba(240,234,216,.7)';ctx.font='10px Noto Sans SC,sans-serif';ctx.textAlign='left';
+    ctx.fillText(cat,W*.62+14,y+2);
+    ctx.fillStyle='rgba(212,180,122,.8)';ctx.font='500 10px Noto Sans SC,sans-serif';
+    ctx.fillText((totals[i]/grand*100).toFixed(0)+'%',W*.95,y+2);
+  });
+}
+
+// ===== MATERIAL COMPARE (PRO) =====
+const matOptions={
+  wall:[
+    {name:'实心砖（标准）',price:'280元/㎡',note:'传统工艺，隔音好，工期长',delta:0},
+    {name:'多孔砖（节能）',price:'320元/㎡',note:'轻质保温，承重稍弱',delta:4000},
+    {name:'加气混凝土块',price:'380元/㎡',note:'保温最佳，施工便捷',delta:9000},
+  ],
+  roof:[
+    {name:'普通混凝土防水',price:'120元/㎡',note:'造价低，需定期维护',delta:0},
+    {name:'SBS防水卷材',price:'180元/㎡',note:'耐久性强，主流选择',delta:6000},
+    {name:'喷涂聚氨酯（PU）',price:'260元/㎡',note:'无接缝，30年质保',delta:15000},
+  ],
+  window:[
+    {name:'普通铝合金单层',price:'380元/㎡',note:'造价低，隔热差',delta:0},
+    {name:'断桥铝双层中空',price:'680元/㎡',note:'节能主流，性价比高',delta:12000},
+    {name:'系统窗三层玻璃',price:'1200元/㎡',note:'顶级隔热降噪',delta:28000},
+  ],
+  floor:[
+    {name:'普通瓷砖（600×600）',price:'180元/㎡',note:'耐磨易清洁',delta:0},
+    {name:'强化复合木地板',price:'280元/㎡',note:'脚感好，铺设快',delta:8000},
+    {name:'实木地板（橡木）',price:'580元/㎡',note:'高端天然，需护理',delta:22000},
+  ],
+};
+let matSel={wall:0,roof:1,window:1,floor:0};
+function renderMatCompare(){
+  if(!isPro){document.getElementById('matCompareContent').innerHTML=`<div style="text-align:center;padding:2rem;"><div style="font-size:1.5rem;opacity:.4;margin-bottom:.75rem;">🔒</div><div style="font-family:'Noto Serif SC',serif;font-size:.95rem;color:var(--gold);margin-bottom:.5rem;">建材对比选型</div><div style="font-size:.7rem;color:var(--text3);line-height:1.7;margin-bottom:1rem;">PRO功能：智能选材，实时计算造价差异</div><button onclick="upgradePro()" style="padding:.6rem 1.5rem;background:var(--gold);color:#1e1c18;border:none;border-radius:20px;font-family:'Noto Serif SC',serif;font-size:.85rem;font-weight:600;cursor:pointer;">开通 PRO</button></div>`;return;}
+  const cats=['wall','roof','window','floor'];const catNames={wall:'墙体材料',roof:'防水材料',window:'门窗选型',floor:'地面材料'};
+  const totalDelta=cats.reduce((a,c)=>a+matOptions[c][matSel[c]].delta,0);
+  let html=`<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.9rem;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:.65rem;color:var(--text3);margin-bottom:4px;">当前选材较基础方案</div><div style="font-family:'Noto Serif SC',serif;font-size:1.4rem;color:${totalDelta>=0?'#c85a3a':'#5aaa7a'};">${totalDelta>=0?'+':''}${fmtW(totalDelta)}</div></div><div style="text-align:right;font-size:.62rem;color:var(--text3);">调整材料选型<br>影响总造价</div></div>`;
+  cats.forEach(cat=>{
+    html+=`<div class="mat-compare-wrap"><div class="mat-tab-row">${catNames[cat]}</div><div class="mat-card"><div style="font-size:.62rem;color:var(--text3);margin-bottom:.5rem;">选择方案（点击切换）</div><div class="mat-option-row">`;
+    matOptions[cat].forEach((opt,i)=>{
+      html+=`<div class="mat-option${matSel[cat]===i?' selected':''}" onclick="selMat('${cat}',${i})">`+
+        `<div class="mat-opt-name">${opt.name.split('（')[0]}</div>`+
+        `<div class="mat-opt-price">${opt.price}</div>`+
+        `<div class="mat-opt-note">${opt.note}</div></div>`;
+    });
+    html+=`</div><div class="mat-impact"><span class="mat-impact-label">比基础方案</span><span class="mat-impact-val">${matOptions[cat][matSel[cat]].delta===0?'基础款':(matOptions[cat][matSel[cat]].delta>0?'+':'')+fmtW(matOptions[cat][matSel[cat]].delta)}</span></div></div></div>`;
+  });
+  document.getElementById('matCompareContent').innerHTML=html;
+}
+function selMat(cat,i){matSel[cat]=i;renderMatCompare();}
+
+// ===== DRAWINGS — GB/T 50104 National Standard =====
+const DT=[
+  {id:'archplan',title:'建筑平面图',sub:'轴线·隔墙·楼梯·门窗·开向标注'},
+  {id:'elevation',title:'建筑立面图',sub:'外墙轮廓·材质分区·标高标注'},
+  {id:'section',title:'建筑剖面图',sub:'结构剖切·楼板·墙身·标高'},
+  {id:'structure',title:'结构施工图',sub:'基础·梁柱配筋·楼板配筋'},
+  {id:'decor',title:'装修效果图',sub:'材料说明·色板·做法表'},
+  {id:'hvac',title:'水暖电管线图',sub:'给排水·强弱电·暖通'},
+  {id:'detail',title:'节点大样图',sub:'门窗·屋檐·楼梯细部'},
+  {id:'site',title:'总平面图',sub:'场地·绿化·停车·指北针'},
+];
+// ===== GB DRAWING HELPERS =====
+// Paper background: white on dark canvas for engineering drawings
+function gbPaper(ctx,W,H){
+  ctx.fillStyle='#f8f5ef';ctx.fillRect(0,0,W,H);
+  // Outer border (图框)
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=2;ctx.strokeRect(8,8,W-16,H-16);
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=.5;ctx.strokeRect(12,12,W-24,H-24);
+}
+// Axis circle (轴号圆圈)
+function axisCircle(ctx,x,y,label,r){
+  r=r||9;ctx.strokeStyle='#222';ctx.lineWidth=.7;
+  ctx.fillStyle='#f8f5ef';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#111';ctx.font=`bold ${r*1.1}px Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,x,y);ctx.textBaseline='alphabetic';
+}
+// Dimension line (尺寸线) — GB style with ticks
+function dimLine(ctx,x1,y1,x2,y2,text,side){
+  side=side||1; // 1=above/left, -1=below/right
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+  const nx=-dy/len*side,ny=dx/len*side; // normal
+  const off=14; // offset distance
+  const ex1=x1+nx*off,ey1=y1+ny*off,ex2=x2+nx*off,ey2=y2+ny*off;
+  ctx.strokeStyle='#444';ctx.lineWidth=.5;
+  // Extension lines
+  ctx.beginPath();ctx.moveTo(x1+nx*4,y1+ny*4);ctx.lineTo(ex1+nx*3,ey1+ny*3);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2+nx*4,y2+ny*4);ctx.lineTo(ex2+nx*3,ey2+ny*3);ctx.stroke();
+  // Dimension line with arrows (45° slash per GB)
+  ctx.beginPath();ctx.moveTo(ex1,ey1);ctx.lineTo(ex2,ey2);ctx.stroke();
+  const slashLen=4;
+  [-1,1].forEach((sign,i)=>{
+    const px=i===0?ex1:ex2,py=i===0?ey1:ey2;
+    const ux=dx/len,uy=dy/len;
+    ctx.beginPath();ctx.moveTo(px-ux*slashLen*sign+ny*.5,py-uy*slashLen*sign+(-nx*.5));
+    ctx.lineTo(px+ux*slashLen*sign-ny*.5,py+uy*slashLen*sign+(nx*.5));ctx.stroke();
+  });
+  // Text
+  const mx=(ex1+ex2)/2+nx*5,my=(ey1+ey2)/2+ny*5;
+  ctx.save();
+  const angle=Math.atan2(dy,dx);
+  ctx.translate(mx,my);ctx.rotate(angle);
+  ctx.fillStyle='#111';ctx.font='9px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(text,0,0);ctx.restore();
+}
+// Wall (墙体) drawing — GB standard: outer solid, filled with pattern
+function drawWall(ctx,x,y,w,h,thickness,isOuter){
+  thickness=thickness||12;
+  ctx.fillStyle=isOuter?'#555':'#888';
+  ctx.fillRect(x,y,w,h);
+  // Hatch for concrete/brick
+  ctx.save();ctx.clip=()=>{};
+  const patW=Math.max(w,h);
+  ctx.strokeStyle=isOuter?'rgba(255,255,255,.25)':'rgba(255,255,255,.3)';ctx.lineWidth=.4;
+  // diagonal hatch
+  const step=isOuter?4:5;
+  ctx.save();ctx.rect(x,y,w,h);ctx.clip();
+  for(let d=-patW;d<patW*2;d+=step){
+    ctx.beginPath();ctx.moveTo(x+d,y);ctx.lineTo(x+d+h,y+h);ctx.stroke();
+  }
+  ctx.restore();
+  ctx.strokeStyle=isOuter?'#111':'#333';ctx.lineWidth=isOuter?1.5:.8;ctx.strokeRect(x,y,w,h);
+}
+// Door symbol (开门方向弧线) — GB standard
+function drawDoor(ctx,hx,hy,hw,hh,side,openAngle){
+  // hx,hy = door hole position, hw=width, hh=height(ignored in plan)
+  // side: 'l'|'r'|'t'|'b' = which side the door hangs from
+  // openAngle in degrees (usually 90)
+  openAngle=(openAngle||90)*Math.PI/180;
+  ctx.fillStyle='#f8f5ef';
+  // Clear the door hole
+  ctx.fillRect(hx,hy,hw,hh);
+  ctx.strokeStyle='#111';ctx.lineWidth=.7;
+  // Door leaf
+  let px,py,pivotX,pivotY,startAngle,endAngle;
+  if(side==='l'||side==='r'){
+    // horizontal door hole (in a vertical wall)
+    if(side==='l'){pivotX=hx;pivotY=hy+hh/2;px=hx+hw;py=hy+hh/2;}
+    else{pivotX=hx+hw;pivotY=hy+hh/2;px=hx;py=hy+hh/2;}
+    const dx2=px-pivotX,dy2=py-pivotY;
+    const baseAngle=Math.atan2(dy2,dx2);
+    startAngle=baseAngle-openAngle;endAngle=baseAngle;
+    // Door leaf line
+    ctx.beginPath();ctx.moveTo(pivotX,pivotY);ctx.lineTo(px,py);ctx.stroke();
+    // Swing arc
+    ctx.beginPath();ctx.arc(pivotX,pivotY,hw,side==='l'?-Math.PI/2:Math.PI/2-openAngle,side==='l'?-Math.PI/2+openAngle:Math.PI/2);ctx.stroke();
+    // Door hinge line at pivot
+    ctx.beginPath();ctx.moveTo(pivotX,pivotY-hh/2);ctx.lineTo(pivotX,pivotY+hh/2);ctx.strokeStyle='#555';ctx.stroke();
+  } else {
+    // vertical door hole (in a horizontal wall)
+    if(side==='t'){pivotX=hx+hw/2;pivotY=hy;py2=hy+hw;px2=hx+hw/2;}
+    else{pivotX=hx+hw/2;pivotY=hy+hh;py2=hy+hh-hw;px2=hx+hw/2;}
+    ctx.beginPath();ctx.moveTo(pivotX,pivotY);ctx.lineTo(px2,py2);ctx.strokeStyle='#111';ctx.stroke();
+    ctx.beginPath();ctx.arc(pivotX,pivotY,hw,side==='t'?0:-Math.PI,side==='t'?openAngle:-Math.PI+openAngle);ctx.stroke();
+  }
+  // Door hole lines (threshold marks)
+  ctx.strokeStyle='#aaa';ctx.lineWidth=.4;
+  ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx,hy+hh);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(hx+hw,hy);ctx.lineTo(hx+hw,hy+hh);ctx.stroke();
+}
+// Window symbol in wall (GB standard: 3 lines)
+function drawWindow(ctx,x,y,w,h,isVert){
+  ctx.fillStyle='rgba(180,210,235,.5)';ctx.fillRect(x,y,w,h);
+  ctx.strokeStyle='#1a6a9a';ctx.lineWidth=.8;
+  if(!isVert){
+    const t=h/3;
+    ctx.strokeRect(x,y,w,h);
+    ctx.beginPath();ctx.moveTo(x,y+t);ctx.lineTo(x+w,y+t);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x,y+t*2);ctx.lineTo(x+w,y+t*2);ctx.stroke();
+  } else {
+    const t=w/3;
+    ctx.strokeRect(x,y,w,h);
+    ctx.beginPath();ctx.moveTo(x+t,y);ctx.lineTo(x+t,y+h);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x+t*2,y);ctx.lineTo(x+t*2,y+h);ctx.stroke();
+  }
+}
+// Stair symbol (楼梯间) — GB standard with step lines and arrow
+function drawStair(ctx,x,y,w,h,goUp){
+  ctx.fillStyle='rgba(220,215,200,.4)';ctx.fillRect(x,y,w,h);
+  ctx.strokeStyle='#333';ctx.lineWidth=.6;ctx.strokeRect(x,y,w,h);
+  const steps=Math.round(h/8);
+  for(let i=1;i<steps;i++){const sy=y+h*i/steps;ctx.beginPath();ctx.moveTo(x,sy);ctx.lineTo(x+w,sy);ctx.stroke();}
+  // Arrow (UP or down)
+  const mx=x+w/2;const ay=goUp?y+h-6:y+6;const adir=goUp?-1:1;
+  ctx.strokeStyle='#222';ctx.lineWidth=.8;
+  ctx.beginPath();ctx.moveTo(mx,ay+adir*12);ctx.lineTo(mx,ay);
+  ctx.lineTo(mx-4,ay+adir*6);ctx.moveTo(mx,ay);ctx.lineTo(mx+4,ay+adir*6);ctx.stroke();
+  // UP label
+  ctx.fillStyle='#222';ctx.font='8px Arial,sans-serif';ctx.textAlign='center';
+  ctx.fillText(goUp?'UP':'DN',mx,y+h/2+3);
+}
+// Title block (图签)
+function titleBlock(ctx,W,H,title,scale,floor){
+  const bx=W-150,by=H-40,bw=138,bh=30;
+  ctx.strokeStyle='#222';ctx.lineWidth=.8;ctx.strokeRect(bx,by,bw,bh);
+  ctx.beginPath();ctx.moveTo(bx,by+15);ctx.lineTo(bx+bw,by+15);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(bx+85,by);ctx.lineTo(bx+85,by+bh);ctx.stroke();
+  ctx.fillStyle='#111';ctx.textAlign='left';
+  ctx.font='bold 9px Noto Sans SC,sans-serif';ctx.fillText(title,bx+4,by+11);
+  ctx.font='8px Arial,sans-serif';
+  ctx.fillText(`比例 ${scale}`,bx+4,by+26);
+  ctx.fillText(`图号 建-0${floor}`,bx+88,by+11);
+  ctx.fillText('筑居 PRO',bx+88,by+26);
+}
+// Section cut symbol
+function sectionMark(ctx,x1,y1,x2,y2,label){
+  ctx.strokeStyle='#111';ctx.lineWidth=1;ctx.setLineDash([6,3]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);
+  [0,1].forEach(i=>{
+    const px=i===0?x1:x2,py=i===0?y1:y2;
+    ctx.fillStyle='#111';ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f8f5ef';ctx.font='bold 7px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,px,py);ctx.textBaseline='alphabetic';
+  });
+}
+
+// ===== GB ARCHPLAN: full plan with axes, walls, doors, windows, stairs =====
+function drawGBArchPlan(ctx,W,H,floorNum){
+  gbPaper(ctx,W,H);
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  const wt=S.struct==='brick'?14:12; // wall thickness in model units
+  const mg={l:52,r:28,t:32,b:48};
+  const sc=Math.min((W-mg.l-mg.r)/bw,(H-mg.t-mg.b)/bd);
+  const ox=mg.l+(W-mg.l-mg.r-bw*sc)/2,oy=mg.t+(H-mg.t-mg.b-bd*sc)/2;
+  const pw=bw*sc,ph=bd*sc;
+  const wts=wt/bw*pw; // wall thickness in screen px
+
+  // ==== AXIS LINES (轴线) — GB dashed center lines ====
+  ctx.strokeStyle='#cc2222';ctx.lineWidth=.6;ctx.setLineDash([8,4,2,4]);
+  // Vertical axes (A,B,C...)
+  const vAxes=[];
+  const vStep=bw<=6?2:bw<=10?2.5:3; // spacing in m
+  for(let x=0;x<=bw;x+=vStep){vAxes.push(x);}
+  if(vAxes[vAxes.length-1]!==bw)vAxes.push(bw);
+  vAxes.forEach((x,i)=>{
+    const sx=ox+x*sc;
+    ctx.beginPath();ctx.moveTo(sx,oy-20);ctx.lineTo(sx,oy+ph+20);ctx.stroke();
+    axisCircle(ctx,sx,oy-20-9,String.fromCharCode(65+i));
+    axisCircle(ctx,sx,oy+ph+20+9,String.fromCharCode(65+i));
+  });
+  // Horizontal axes (1,2,3...)
+  const hAxes=[];
+  const hStep=bd<=6?2:bd<=10?2.5:3;
+  for(let y=0;y<=bd;y+=hStep){hAxes.push(y);}
+  if(hAxes[hAxes.length-1]!==bd)hAxes.push(bd);
+  hAxes.forEach((y,i)=>{
+    const sy=oy+y*sc;
+    ctx.beginPath();ctx.moveTo(ox-20,sy);ctx.lineTo(ox+pw+20,sy);ctx.stroke();
+    axisCircle(ctx,ox-20-9,sy,(i+1).toString());
+    axisCircle(ctx,ox+pw+20+9,sy,(i+1).toString());
+  });
+  ctx.setLineDash([]);
+
+  // ==== OUTER WALLS (外墙) — thick, hatched ====
+  // Top wall
+  drawWall(ctx,ox,oy,pw,wts,wts,true);
+  // Bottom wall
+  drawWall(ctx,ox,oy+ph-wts,pw,wts,wts,true);
+  // Left wall
+  drawWall(ctx,ox,oy+wts,wts,ph-wts*2,wts,true);
+  // Right wall
+  drawWall(ctx,ox+pw-wts,oy+wts,wts,ph-wts*2,wts,true);
+
+  // ==== INNER WALLS (内墙) ====
+  const iwt=wts*0.6; // inner wall thinner
+  const rooms=getRooms(floorNum);
+
+  // Derive inner wall positions from rooms
+  const innerV=new Set(),innerH=new Set();
+  rooms.forEach(r=>{
+    if(r.x>0.01&&r.x<0.99)innerV.add(Math.round(r.x*100));
+    if(r.x+r.w>0.01&&r.x+r.w<0.99)innerV.add(Math.round((r.x+r.w)*100));
+    if(r.y>0.01&&r.y<0.99)innerH.add(Math.round(r.y*100));
+    if(r.y+r.h>0.01&&r.y+r.h<0.99)innerH.add(Math.round((r.y+r.h)*100));
+  });
+  innerV.forEach(xp=>{
+    const sx=ox+xp/100*pw-iwt/2;
+    drawWall(ctx,sx,oy+wts,iwt,ph-wts*2,iwt,false);
+  });
+  innerH.forEach(yp=>{
+    const sy=oy+yp/100*ph-iwt/2;
+    drawWall(ctx,ox+wts,sy,pw-wts*2,iwt,iwt,false);
+  });
+
+  // ==== STAIRCASE (楼梯间) ====
+  if(S.f>1){
+    const stRoom=rooms.find(r=>r.n.includes('楼梯')||r.n.includes('梯'));
+    if(stRoom){
+      const sx=ox+stRoom.x*pw+wts*.5,sy=oy+stRoom.y*ph+wts*.5;
+      const sw=stRoom.w*pw-iwt,sh=stRoom.h*ph-iwt;
+      drawStair(ctx,sx,sy,sw,sh,floorNum===1);
+    } else {
+      // Default stair position
+      const sx=ox+pw*0.7,sy=oy+ph*0.7;
+      drawStair(ctx,sx,sy,pw*0.15,ph*0.2,floorNum===1);
+    }
+  }
+
+  // ==== ROOM LABELS ====
+  rooms.forEach(r=>{
+    const rx=ox+r.x*pw,ry=oy+r.y*ph,rw=r.w*pw,rh=r.h*ph;
+    ctx.fillStyle='rgba(50,80,50,.06)';ctx.fillRect(rx+wts*.3,ry+wts*.3,rw-wts*.6,rh-wts*.6);
+    // Room name
+    ctx.fillStyle='#1a1a1a';ctx.font=`bold ${Math.max(8,Math.min(11,rw/5))}px Noto Sans SC,sans-serif`;ctx.textAlign='center';
+    ctx.fillText(r.n,rx+rw/2,ry+rh/2-3);
+    // Area
+    const area=(r.w*bw*r.h*bd).toFixed(1);
+    ctx.font=`${Math.max(7,Math.min(9,rw/6))}px Arial,sans-serif`;ctx.fillStyle='#444';
+    ctx.fillText(area+'㎡',rx+rw/2,ry+rh/2+10);
+  });
+
+  // ==== DOORS (门) — GB swing arcs ====
+  // Main entrance at bottom center
+  const doorW=wts*4.5;
+  const dox=ox+pw/2-doorW/2,doy=oy+ph-wts;
+  ctx.fillStyle='#f8f5ef';ctx.fillRect(dox,doy,doorW,wts+1);
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=.7;
+  ctx.beginPath();ctx.moveTo(dox,doy);ctx.lineTo(dox,doy+wts);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(dox+doorW,doy);ctx.lineTo(dox+doorW,doy+wts);ctx.stroke();
+  // Door leaf
+  ctx.beginPath();ctx.moveTo(dox+doorW/2,doy+wts/2);ctx.lineTo(dox+doorW/2+doorW*0.45,doy+wts/2);ctx.stroke();
+  ctx.beginPath();ctx.arc(dox+doorW/2,doy+wts/2,doorW*0.45,-Math.PI/4,Math.PI/6);ctx.stroke();
+  // Window labels above door
+  ctx.fillStyle='#555';ctx.font='7px Arial,sans-serif';ctx.textAlign='center';
+  ctx.fillText('M1 1000×2100',dox+doorW/2,oy+ph+10);
+
+  // Interior doors on inner walls
+  innerV.forEach((xp,idx)=>{
+    if(xp<10||xp>90)return;
+    const sx=ox+xp/100*pw-iwt/2;const dy2=oy+ph*0.35;const dw=wts*4;
+    ctx.fillStyle='#f8f5ef';ctx.fillRect(sx,dy2,iwt+1,dw);
+    ctx.strokeStyle='#1a1a1a';ctx.lineWidth=.6;
+    ctx.beginPath();ctx.moveTo(sx+iwt/2,dy2);ctx.lineTo(sx+iwt/2+dw,dy2);ctx.stroke();
+    ctx.beginPath();ctx.arc(sx+iwt/2,dy2,dw,0,Math.PI/2);ctx.stroke();
+    ctx.fillStyle='#666';ctx.font='7px Arial,sans-serif';ctx.textAlign='center';
+    ctx.fillText('M'+(idx+2),sx+iwt/2+dw/2,dy2-3);
+  });
+
+  // ==== WINDOWS (窗) — GB 3-line symbol ====
+  // Top wall windows
+  const winW=wts*5,winCount=Math.max(1,Math.floor(bw/3.5));
+  for(let wi=0;wi<winCount;wi++){
+    const wx=ox+pw*(wi+1)/(winCount+1)-winW/2;
+    ctx.fillStyle='#f8f5ef';ctx.fillRect(wx,oy,winW,wts);
+    drawWindow(ctx,wx,oy,winW,wts,false);
+    ctx.fillStyle='#1a6a9a';ctx.font='7px Arial,sans-serif';ctx.textAlign='center';
+    ctx.fillText(`C${wi+1} 1800×1500`,wx+winW/2,oy-4);
+  }
+  // Side wall windows
+  const sideWinH=wts*4.5;
+  for(let f=0;f<Math.min(2,S.f);f++){
+    const wy=oy+ph*(f*0.4+0.15);
+    ctx.fillStyle='#f8f5ef';ctx.fillRect(ox,wy,wts,sideWinH);
+    drawWindow(ctx,ox,wy,wts,sideWinH,true);
+    ctx.fillStyle='#1a6a9a';ctx.font='7px Arial,sans-serif';ctx.textAlign='left';
+    ctx.fillText(`C${winCount+f+1}`,ox-18,wy+sideWinH/2+3);
+  }
+
+  // ==== SECTION CUT LINE ====
+  sectionMark(ctx,ox+pw*0.5,oy-18,ox+pw*0.5,oy+ph+18,'1');
+
+  // ==== DIMENSION LINES (尺寸标注) ====
+  // Overall width
+  dimLine(ctx,ox,oy+ph,ox+pw,oy+ph,bw+'m',-1);
+  // Bay dimensions
+  vAxes.forEach((x,i)=>{if(i<vAxes.length-1){
+    const x1=ox+vAxes[i]*sc,x2=ox+vAxes[i+1]*sc;
+    dimLine(ctx,x1,oy+ph+12,x2,oy+ph+12,(vAxes[i+1]-vAxes[i]).toFixed(1)+'m',-1);
+  }});
+  // Overall depth
+  dimLine(ctx,ox,oy,ox,oy+ph,bd+'m',1);
+  // Bay depths
+  hAxes.forEach((y,i)=>{if(i<hAxes.length-1){
+    const y1=oy+hAxes[i]*sc,y2=oy+hAxes[i+1]*sc;
+    dimLine(ctx,ox-12,y1,ox-12,y2,(hAxes[i+1]-hAxes[i]).toFixed(1)+'m',1);
+  }});
+
+  // ==== ELEVATION MARKERS (标高) ====
+  const elev=(floorNum-1)*S.h;
+  ctx.fillStyle='#222';ctx.font='7px Arial,sans-serif';ctx.textAlign='left';
+  ctx.fillText(`±${elev.toFixed(3)}`,ox+pw+5,oy+ph-2);
+  // elevation triangle symbol
+  ctx.strokeStyle='#222';ctx.lineWidth=.6;
+  ctx.beginPath();ctx.moveTo(ox+pw+3,oy+ph);ctx.lineTo(ox+pw+6,oy+ph-5);ctx.lineTo(ox+pw+9,oy+ph);ctx.stroke();
+
+  // ==== COMPASS for ground floor ====
+  if(floorNum===1){
+    const cx=ox+pw+20,cy=oy+10;
+    ctx.strokeStyle='#333';ctx.lineWidth=.8;
+    ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#111';ctx.font='bold 7px Arial,sans-serif';ctx.textAlign='center';
+    ctx.fillText('N',cx,cy-10);
+    ctx.beginPath();ctx.moveTo(cx,cy-7);ctx.lineTo(cx-3,cy+4);ctx.lineTo(cx,cy+1);ctx.lineTo(cx+3,cy+4);ctx.closePath();
+    ctx.fillStyle='#111';ctx.fill();
+  }
+
+  // Title block
+  titleBlock(ctx,W,H,`${floorNum===1?'首':'第'+floorNum}层建筑平面图 1:100`,'1:100',floorNum);
+}
+
+// ===== GB ELEVATION: south elevation with material zones and level marks =====
+function drawGBElevation(ctx,W,H){
+  gbPaper(ctx,W,H);
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  const totalH=S.f*S.h;
+  const roofH=S.roof==='slope'?S.h*0.45:S.roof==='hip'?S.h*0.38:0.2;
+  const mg={l:58,r:30,t:24,b:48};
+  const sc=Math.min((W-mg.l-mg.r)/bw,(H-mg.t-mg.b)/(totalH+roofH+0.5));
+  const ox=mg.l+(W-mg.l-mg.r-bw*sc)/2,oy=mg.t+12;
+  const pw=bw*sc,totalPx=(totalH+roofH)*sc;
+  const ground=oy+totalPx+roofH*sc; // ground y
+
+  // ==== GROUND LINE ====
+  ctx.strokeStyle='#222';ctx.lineWidth=1.5;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(ox-20,ground);ctx.lineTo(ox+pw+30,ground);ctx.stroke();
+
+  // Material zone colors per GB
+  const matColors={
+    plaster:'#ddd8c8',    // 抹灰
+    tile:'#c8d0b8',       // 面砖
+    stone:'#b8b0a0',      // 石材
+    paint:'#e0ddd0',      // 涂料
+    expose:'#c0b8a8',     // 清水混凝土
+    roof_tile:'#8a7060',  // 屋面瓦
+    roof_flat:'#7a8888',  // 防水层
+    slab:'#aaa090',       // 楼板
+  };
+  const wallMat=S.decor==='high'?'stone':S.style==='chinese'?'tile':'plaster';
+  const baseMat='stone'; // base course always stone/concrete
+
+  // ==== WALL BODY per floor ====
+  for(let f=0;f<S.f;f++){
+    const fy=ground-(f+1)*S.h*sc;const fh=S.h*sc;
+
+    // Base course (勒脚) at ground floor
+    if(f===0){
+      ctx.fillStyle=matColors.stone;ctx.fillRect(ox,ground-fh,pw,fh*0.12);
+      // Hatch base course (石材纹理)
+      ctx.strokeStyle='rgba(100,80,60,.35)';ctx.lineWidth=.4;
+      for(let lx=ox;lx<ox+pw;lx+=6){
+        ctx.beginPath();ctx.moveTo(lx,ground-fh*0.12);ctx.lineTo(lx,ground);ctx.stroke();
+      }
+      // Label
+      ctx.fillStyle='#444';ctx.font='7px Arial,sans-serif';ctx.textAlign='left';
+      ctx.fillText('勒脚（花岗岩）',ox+pw+3,ground-fh*0.06);
+    }
+
+    // Main wall zone
+    const wallTop=f===0?ground-fh*0.88:fy;
+    const wallBot=f===0?ground-fh*0.12:fy+fh;
+    ctx.fillStyle=matColors[wallMat];ctx.fillRect(ox,wallTop,pw,wallBot-wallTop);
+    // Texture lines for wall material
+    if(wallMat==='tile'){
+      ctx.strokeStyle='rgba(80,100,70,.25)';ctx.lineWidth=.3;
+      for(let ly=wallTop;ly<wallBot;ly+=8){ctx.beginPath();ctx.moveTo(ox,ly);ctx.lineTo(ox+pw,ly);ctx.stroke();}
+      for(let lx=ox;lx<ox+pw;lx+=12){ctx.beginPath();ctx.moveTo(lx,wallTop);ctx.lineTo(lx,wallBot);ctx.stroke();}
+    } else if(wallMat==='stone'){
+      ctx.strokeStyle='rgba(80,70,55,.2)';ctx.lineWidth=.3;
+      const stoneH=14;
+      for(let ly=wallTop;ly<wallBot;ly+=stoneH){
+        ctx.beginPath();ctx.moveTo(ox,ly);ctx.lineTo(ox+pw,ly);ctx.stroke();
+        for(let lx=ox;lx<ox+pw;lx+=24){ctx.beginPath();ctx.moveTo(lx+(ly%28),ly);ctx.lineTo(lx+(ly%28),Math.min(ly+stoneH,wallBot));ctx.stroke();}
+      }
+    } else {
+      // Plaster/paint — subtle stipple
+      ctx.fillStyle='rgba(180,160,120,.08)';
+      for(let i=0;i<30;i++){ctx.fillRect(ox+Math.random()*pw,wallTop+Math.random()*(wallBot-wallTop),1.5,1.5);}
+    }
+
+    // Floor/ceiling slab line (楼板线) — thick dark
+    if(f<S.f-1){
+      ctx.fillStyle=matColors.slab;ctx.fillRect(ox-3,fy-4,pw+6,8);
+      ctx.strokeStyle='#333';ctx.lineWidth=1.2;ctx.strokeRect(ox-3,fy-4,pw+6,8);
+      // Slab hatch
+      ctx.strokeStyle='rgba(50,50,50,.4)';ctx.lineWidth=.4;
+      for(let lx=ox-3;lx<ox+pw+3;lx+=4){ctx.beginPath();ctx.moveTo(lx,fy-4);ctx.lineTo(lx+8,fy+4);ctx.stroke();}
+    }
+
+    // Window openings
+    const wn=Math.max(1,Math.floor(bw/3.5));
+    for(let wi=0;wi<wn;wi++){
+      const winX=ox+pw*(wi+1)/(wn+1)-pw/wn*0.18;
+      const winW2=pw/wn*0.36;
+      const winSill=fy+fh*0.28,winTop2=fy+fh*0.72;
+      // Window recess (窗洞)
+      ctx.fillStyle='rgba(160,200,230,.45)';ctx.fillRect(winX,winTop2,winW2,winSill-winTop2);
+      ctx.strokeStyle='#1a5a8a';ctx.lineWidth=.7;ctx.strokeRect(winX,winTop2,winW2,winSill-winTop2);
+      // Window mullion
+      ctx.beginPath();ctx.moveTo(winX+winW2/2,winTop2);ctx.lineTo(winX+winW2/2,winSill);ctx.stroke();
+      // Transom
+      ctx.beginPath();ctx.moveTo(winX,winTop2+(winSill-winTop2)*0.5);ctx.lineTo(winX+winW2,winTop2+(winSill-winTop2)*0.5);ctx.stroke();
+      // Window frame (窗框)
+      ctx.fillStyle=S.decor==='high'?'rgba(220,210,180,.5)':'rgba(180,180,180,.3)';
+      ctx.fillRect(winX-1.5,winTop2-1.5,3,winSill-winTop2+3);// side frame
+      ctx.fillRect(winX+winW2-1.5,winTop2-1.5,3,winSill-winTop2+3);
+      // Sill line
+      ctx.strokeStyle='#666';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(winX-2,winSill+1.5);ctx.lineTo(winX+winW2+2,winSill+1.5);ctx.stroke();
+      // Window label
+      ctx.fillStyle='#1a6a9a';ctx.font='6.5px Arial,sans-serif';ctx.textAlign='center';
+      ctx.fillText(`C${wi+1+(f*wn)} 1800×1500`,winX+winW2/2,winTop2-4);
+    }
+
+    // Door at ground floor center
+    if(f===0){
+      const doorX=ox+pw/2-pw/bw*0.5;const doorW2=pw/bw;
+      ctx.fillStyle='rgba(120,80,40,.4)';ctx.fillRect(doorX,ground-fh*0.65,doorW2,fh*0.65);
+      ctx.strokeStyle='#5a3a1a';ctx.lineWidth=1;ctx.strokeRect(doorX,ground-fh*0.65,doorW2,fh*0.65);
+      // Door panels
+      ctx.strokeStyle='rgba(90,60,25,.5)';ctx.lineWidth=.5;
+      ctx.beginPath();ctx.moveTo(doorX+doorW2/2,ground-fh*0.65);ctx.lineTo(doorX+doorW2/2,ground);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(doorX,ground-fh*0.35);ctx.lineTo(doorX+doorW2,ground-fh*0.35);ctx.stroke();
+      // Door label
+      ctx.fillStyle='#5a3a1a';ctx.font='6.5px Arial,sans-serif';ctx.textAlign='center';
+      ctx.fillText('M1 1000×2100',doorX+doorW2/2,ground-fh*0.65-4);
+    }
+
+    // Outer wall outline (外墙轮廓线) — thick solid per GB
+    ctx.strokeStyle='#111';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,fy);ctx.lineTo(ox,fy+fh);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(ox+pw,fy);ctx.lineTo(ox+pw,fy+fh);ctx.stroke();
+  }
+
+  // ==== ROOF ====
+  const roofBase=oy;
+  if(S.roof==='slope'||S.roof==='hip'){
+    const ridgeH=roofH*sc;
+    ctx.fillStyle=matColors.roof_tile;
+    ctx.beginPath();ctx.moveTo(ox-wts,ground-totalH*sc);
+    ctx.lineTo(ox+pw/2,ground-totalH*sc-ridgeH);
+    ctx.lineTo(ox+pw+wts,ground-totalH*sc);ctx.closePath();ctx.fill();
+    // Tile texture lines
+    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.4;
+    for(let d=0;d<Math.sqrt(Math.pow(pw/2+wts,2)+ridgeH*ridgeH);d+=6){
+      const t=d/(Math.sqrt(Math.pow(pw/2,2)+ridgeH*ridgeH));
+      const mx=ox+pw/2*(1-t),my=ground-totalH*sc-(ridgeH*t);
+      ctx.beginPath();ctx.moveTo(mx-1,my);ctx.lineTo(mx-pw/2*(1-t)-wts,ground-totalH*sc);ctx.stroke();
+    }
+    ctx.strokeStyle='#333';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(ox-wts,ground-totalH*sc);
+    ctx.lineTo(ox+pw/2,ground-totalH*sc-ridgeH);
+    ctx.lineTo(ox+pw+wts,ground-totalH*sc);ctx.stroke();
+    // Ridge line
+    ctx.strokeStyle='#555';ctx.lineWidth=.8;
+    ctx.beginPath();ctx.moveTo(ox+pw/2-2,ground-totalH*sc-ridgeH);ctx.lineTo(ox+pw/2+2,ground-totalH*sc-ridgeH);ctx.stroke();
+    // Eave line (檐口)
+    ctx.strokeStyle='#333';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(ox-wts-4,ground-totalH*sc);ctx.lineTo(ox+pw+wts+4,ground-totalH*sc);ctx.stroke();
+    // Roof label
+    ctx.fillStyle='#5a4a38';ctx.font='7px Arial,sans-serif';ctx.textAlign='right';
+    ctx.fillText(S.roof==='slope'?'双坡屋顶（沥青瓦）':'四坡屋顶（琉璃瓦）',ox-wts-6,ground-totalH*sc-ridgeH/2);
+  } else {
+    ctx.fillStyle=matColors.roof_flat;ctx.fillRect(ox-4,ground-totalH*sc-12,pw+8,12);
+    ctx.strokeStyle='rgba(50,50,50,.4)';ctx.lineWidth=.3;
+    for(let lx=ox;lx<ox+pw;lx+=5){ctx.beginPath();ctx.moveTo(lx,ground-totalH*sc-12);ctx.lineTo(lx+5,ground-totalH*sc);ctx.stroke();}
+    ctx.strokeStyle='#333';ctx.lineWidth=1.2;ctx.strokeRect(ox-4,ground-totalH*sc-12,pw+8,12);
+    ctx.fillStyle='#5a5a5a';ctx.font='7px Arial,sans-serif';ctx.textAlign='right';
+    ctx.fillText('平屋顶（防水卷材）',ox-6,ground-totalH*sc-4);
+  }
+
+  // ==== LEVEL MARKS (标高) ====
+  const levels=[];
+  for(let f=0;f<=S.f;f++)levels.push({h:f*S.h,label:f===0?'±0.000':`+${(f*S.h).toFixed(3)}`});
+  if(S.roof!=='flat')levels.push({h:totalH+roofH,label:`+${(totalH+roofH).toFixed(3)} (屋脊)`});
+  levels.push({h:totalH,label:`+${totalH.toFixed(3)} (檐口)`});
+  levels.forEach(lv=>{
+    const ly=ground-lv.h*sc;
+    ctx.strokeStyle='#444';ctx.lineWidth=.5;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(ox+pw+4,ly);ctx.lineTo(ox+pw+25,ly);ctx.stroke();ctx.setLineDash([]);
+    // Triangle elevation symbol
+    ctx.strokeStyle='#222';ctx.lineWidth=.7;
+    ctx.beginPath();ctx.moveTo(ox+pw+6,ly);ctx.lineTo(ox+pw+9,ly-4);ctx.lineTo(ox+pw+12,ly);ctx.stroke();
+    ctx.fillStyle='#111';ctx.font='7px Arial,sans-serif';ctx.textAlign='left';
+    ctx.fillText(lv.label,ox+pw+14,ly+3);
+  });
+
+  // Axis lines at ends
+  ctx.strokeStyle='#cc2222';ctx.lineWidth=.5;ctx.setLineDash([6,3,2,3]);
+  ctx.beginPath();ctx.moveTo(ox,oy-10);ctx.lineTo(ox,ground+10);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox+pw,oy-10);ctx.lineTo(ox+pw,ground+10);ctx.stroke();ctx.setLineDash([]);
+  axisCircle(ctx,ox,oy-10-9,'A');axisCircle(ctx,ox+pw,oy-10-9,'B');
+
+  // Horizontal dimension
+  dimLine(ctx,ox,ground+20,ox+pw,ground+20,bw+'m',-1);
+
+  // Material legend
+  const legendX=14,legendY=oy+4;
+  ctx.fillStyle='#111';ctx.font='bold 8px Arial,sans-serif';ctx.textAlign='left';
+  ctx.fillText('材质图例',legendX,legendY);
+  const legend=[
+    {color:matColors[wallMat],label:{plaster:'外墙涂料',tile:'外墙砖',stone:'石材幕墙'}[wallMat]||'外墙'},
+    {color:matColors.stone,label:'勒脚石材'},
+    {color:matColors.roof_tile,label:'屋面瓦'},
+    {color:'rgba(160,200,230,.45)',label:'铝合金门窗'},
+  ];
+  legend.forEach((l,i)=>{
+    ctx.fillStyle=l.color;ctx.fillRect(legendX,legendY+6+i*12,12,9);
+    ctx.strokeStyle='#888';ctx.lineWidth=.4;ctx.strokeRect(legendX,legendY+6+i*12,12,9);
+    ctx.fillStyle='#333';ctx.font='7px Arial,sans-serif';ctx.fillText(l.label,legendX+15,legendY+13+i*12);
+  });
+
+  // Outer wall contour — re-draw on top with thick line (外墙轮廓线最粗)
+  ctx.strokeStyle='#111';ctx.lineWidth=2.5;
+  ctx.strokeRect(ox,ground-totalH*sc,pw,totalH*sc);
+
+  titleBlock(ctx,W,H,'南立面图 1:100','1:100',1);
+}
+
+// ===== FULL DRAWMODALFULL WITH GB DRAWINGS =====
+function buildDrawingGrid(){
+  const el=document.getElementById('drawingGrid');if(!el)return;
+  el.innerHTML=DT.map(d=>`<div class="drawing-card" onclick="openDrawing('${d.id}','${d.title}')">
+    <canvas id="dc-${d.id}" height="88" style="width:100%;display:block;"></canvas>
+    <div class="drawing-card-info"><div class="dc-title">${d.title}</div><div class="dc-sub">${d.sub}</div></div>
+    ${!isPro?`<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">${d.title}</div><button class="unlock-btn" onclick="event.stopPropagation();upgradePro()">解锁 PRO</button></div>`:''}
+  </div>`).join('');
+  setTimeout(()=>DT.forEach(d=>drawThumb(d.id)),30);
+}
+function drawThumb(id){
+  const c=document.getElementById('dc-'+id);if(!c)return;
+  const W=c.offsetWidth||160,H=88;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  // Mini preview using GB drawing
+  if(id==='archplan'){drawGBArchPlan(ctx,W,H,1);}
+  else if(id==='elevation'){drawGBElevation(ctx,W,H);}
+  else{
+    // Other drawing thumbnails
+    ctx.fillStyle='#f8f5ef';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.strokeRect(4,4,W-8,H-8);
+    ctx.strokeStyle='#888';ctx.lineWidth=.5;ctx.strokeRect(6,6,W-12,H-12);
+    const icons={section:'1-1',structure:'S',decor:'D',hvac:'M',detail:'⊕',site:'总'};
+    ctx.fillStyle='#999';ctx.font=`bold ${H*0.28}px Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(icons[id]||'?',W/2,H/2-6);ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#555';ctx.font='8px Noto Sans SC,sans-serif';ctx.fillText(DT.find(d=>d.id===id)?.title||id,W/2,H-6);
+    if(isPro){ctx.fillStyle='rgba(212,180,122,.7)';ctx.font='bold 7px Arial,sans-serif';ctx.textAlign='right';ctx.fillText('PRO',W-6,12);}
+  }
+}
+function openDrawing(id,title){
+  if(!isPro){upgradePro();return;}
+  document.getElementById('drawingModal').style.display='flex';
+  document.getElementById('modalTitle').textContent=title;
+  setTimeout(()=>drawModalFull(id),30);
+  const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+  const wt=S.struct==='brick'?240:200;
+  const specMap={
+    archplan:[['图纸比例','1:100'],['绘制标准','GB/T 50104-2010'],['首层面积',`${(bw*bd).toFixed(0)}㎡`],['墙体厚度',`外墙${wt}mm / 内墙${wt-40}mm`],['层数',`${S.f}层`],['总建筑面积',`${(bw*bd*S.f).toFixed(0)}㎡`]],
+    elevation:[['图纸比例','1:100'],['绘制标准','GB/T 50104-2010'],['外墙材质',{simple:'外墙涂料',chinese:'外墙砖 + 石材',european:'石材幕墙'}[S.style]],['建筑总高',`${(S.f*S.h).toFixed(1)}m`],['屋顶形式',{flat:'平屋顶（防水卷材）',slope:'双坡（沥青瓦）',hip:'四坡（琉璃瓦）'}[S.roof]],['层高',`${S.h}m`]],
+    section:[['图纸比例','1:100'],['剖切方向','1-1南北向纵剖'],['层高',`${S.h}m/层`],['板厚','120mm（楼板）'],['建筑总高',`${(S.f*S.h).toFixed(1)}m`]],
+    structure:[['结构类型',{brick:'砖混结构',frame:'RC框架结构',light:'轻钢结构'}[S.struct]],['抗震等级','三级（7度0.10g）'],['混凝土','C30梁柱 C25基础'],['钢筋','HRB400主筋 HPB300箍筋'],['基础','条形基础+防潮层']],
+    decor:[['装修标准',{basic:'简装500元/㎡',mid:'中装800元/㎡',high:'精装1200元/㎡'}[S.decor]],['地面',S.decor==='high'?'实木地板/大理石':'瓷砖/强化木地板'],['墙面',S.decor==='high'?'乳胶漆/硬包':'乳胶漆'],['顶面','石膏板吊顶/腻子漆'],['厨卫',S.decor==='high'?'进口品牌':'国产中档']],
+    hvac:[['给水','市政供水+屋顶水箱'],['排水','雨污分流 DN100'],['供暖',S.region==='north'?'地暖+散热器':'分体空调'],['强电','10kVA三相四线'],['弱电','网络+有线电视+门禁']],
+    detail:[['门洞','M1:1000×2100 / M2:900×2100'],['窗洞','C1:1800×1500 / C2:900×1200'],['窗台高','客厅900mm / 卧室900mm'],['过梁','L1:200×300（框架）'],['勒脚','300mm高花岗岩']],
+    site:[['总用地',`${S.w*S.d}㎡`],['建筑占地',`${(bw*bd).toFixed(0)}㎡`],['建筑密度',`${(bw*bd/S.w/S.d*100).toFixed(0)}%`],['绿地率','约20%'],['停车位','1个（前院）'],['消防通道','宽度≥4m']],
+  };
+  document.getElementById('modalSpecs').innerHTML=(specMap[id]||specMap.archplan).map(([l,v])=>`<div class="ms-row"><span class="ms-label">${l}</span><span class="ms-val">${v}</span></div>`).join('');
+}
+function drawModalFull(id){
+  const c=document.getElementById('modalCanvas');const W=c.offsetWidth||400,H=300;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  if(id==='archplan'){
+    // Floor selector — show current floor
+    drawGBArchPlan(ctx,W,H,curFloor||1);
+  } else if(id==='elevation'){
+    drawGBElevation(ctx,W,H);
+  } else {
+    // Other drawings — GB-style placeholder with real structure
+    gbPaper(ctx,W,H);
+    const bw=Math.max(S.w-2,4),bd=Math.max(S.d-3,5);
+    ctx.fillStyle='#333';ctx.font='bold 12px Noto Sans SC,sans-serif';ctx.textAlign='center';
+    ctx.fillText(document.getElementById('modalTitle').textContent,W/2,H/2-28);
+    ctx.fillStyle='#666';ctx.font='9px Arial,sans-serif';
+    ctx.fillText(`建筑面积 ${(bw*bd*S.f).toFixed(0)}㎡ · ${S.f}层 · ${S.struct==='frame'?'框架':'砖混'}结构`,W/2,H/2-10);
+    ctx.fillText(`比例 1:100 · 执行标准 GB/T 50104-2010`,W/2,H/2+6);
+    ctx.fillText('专业图纸已解锁 · 可下载 DWG 和 PDF 格式',W/2,H/2+22);
+    // Draw a structural grid
+    const mg=40,sc=Math.min((W-mg*2)/bw,(H-mg*2-30)/bd);
+    const ox=(W-bw*sc)/2,oy=mg;
+    ctx.strokeStyle='#cc2222';ctx.lineWidth=.4;ctx.setLineDash([5,3,1,3]);
+    for(let x=0;x<=bw;x+=bw/4){const sx=ox+x*sc;ctx.beginPath();ctx.moveTo(sx,oy);ctx.lineTo(sx,oy+bd*sc);ctx.stroke();}
+    for(let y=0;y<=bd;y+=bd/3){const sy=oy+y*sc;ctx.beginPath();ctx.moveTo(ox,sy);ctx.lineTo(ox+bw*sc,sy);ctx.stroke();}
+    ctx.setLineDash([]);
+    ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.strokeRect(ox,oy,bw*sc,bd*sc);
+    titleBlock(ctx,W,H,document.getElementById('modalTitle').textContent,'1:100',1);
+  }
+  // Add floor tabs hint for archplan
+  if(id==='archplan'&&S.f>1){
+    ctx.fillStyle='rgba(50,100,50,.8)';ctx.font='8px Noto Sans SC,sans-serif';ctx.textAlign='left';
+    ctx.fillText(`当前显示: 第${curFloor||1}层 (共${S.f}层)`,14,H-6);
+  }
+}
+
+// ===== SCHEDULE (施工进度) =====
+function getPhaseTemplate(){
+  const tot=calc().tot;
+  return[
+    {name:'地基与基础',weeks:4,color:'#d4b47a',tasks:['地质勘察与放线','土方开挖','基础垫层浇筑','基础砌筑/浇筑','防潮层处理'],note:''},
+    {name:'主体结构',weeks:S.f*6,color:'#9a7248',tasks:['一层柱梁绑筋浇筑','一层墙体砌筑','楼板支模浇筑','重复各层施工','主体封顶验收'],note:''},
+    {name:'屋面工程',weeks:2,color:'#9a8258',tasks:['屋面找坡层施工','防水层铺设','保温层施工',S.roof==='slope'?'屋面瓦铺设':'细石混凝土面层'],note:''},
+    {name:'门窗安装',weeks:2,color:'#5a8a6a',tasks:['门窗框安装固定','玻璃安装','门窗五金安装','密封打胶'],note:''},
+    {name:'水电预埋',weeks:3,color:'#4A7FB5',tasks:['给排水管道预埋','强电管线穿管','弱电线路布设','卫浴洁具粗装'],note:''},
+    {name:'室内装修',weeks:S.decor==='basic'?6:S.decor==='mid'?10:14,color:'#6a5a9a',tasks:['抹灰找平','地面铺贴','墙面处理','吊顶施工','厨卫精装'],note:''},
+    {name:'验收交付',weeks:1,color:'#5aaa7a',tasks:['水电竣工验收','质量全面检查','整改清洁','乡镇规划验收','不动产登记'],note:''},
+  ];
+}
+function initPhases(){
+  phaseData=getPhaseTemplate().map(p=>({...p,progress:0,expanded:false,checkStates:p.tasks.map(()=>false)}));
+}
+function updatePhaseProgress(){
+  phaseData.forEach(p=>{p.progress=p.checkStates.filter(Boolean).length/p.tasks.length*100;});
+  const totalWeeks=phaseData.reduce((a,p)=>a+p.weeks,0);
+  const doneWeeks=phaseData.reduce((a,p)=>a+p.weeks*(p.progress/100),0);
+  const pct=Math.round(doneWeeks/totalWeeks*100);
+  document.getElementById('overall-bar').style.width=pct+'%';
+  document.getElementById('ph-pct').textContent='整体进度 '+pct+'%';
+  const done=phaseData.filter(p=>p.progress>=100).length;
+  document.getElementById('ph-done').textContent=done;
+  const remain=Math.round(totalWeeks-doneWeeks);
+  document.getElementById('ss-total').textContent=totalWeeks+'周（约'+Math.round(totalWeeks/4.3)+'个月）';
+  document.getElementById('ss-done').textContent=Math.round(doneWeeks)+'周';
+  document.getElementById('ss-remain').textContent=remain+'周';
+  const finDate=new Date();finDate.setDate(finDate.getDate()+remain*7);
+  document.getElementById('ss-finish').textContent=finDate.getFullYear()+'年'+(finDate.getMonth()+1)+'月（预计）';
+}
+function renderPhases(){
+  if(!isPro){document.getElementById('phaseList').innerHTML=`<div style="text-align:center;padding:1.5rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);"><div style="font-size:1.3rem;opacity:.4;margin-bottom:.6rem;">🔒</div><div style="font-family:'Noto Serif SC',serif;font-size:.9rem;color:var(--gold);margin-bottom:.4rem;">施工进度管理</div><div style="font-size:.68rem;color:var(--text3);line-height:1.7;margin-bottom:.75rem;">PRO功能：记录每个施工阶段的完成情况，掌控工期。</div><button onclick="upgradePro()" style="padding:.55rem 1.4rem;background:var(--gold);color:#1e1c18;border:none;border-radius:20px;font-family:'Noto Serif SC',serif;font-size:.82rem;font-weight:600;cursor:pointer;">开通 PRO</button></div>`;return;}
+  document.getElementById('ph-phases').textContent=phaseData.length;
+  updatePhaseProgress();
+  document.getElementById('phaseList').innerHTML=phaseData.map((p,pi)=>{
+    const done=p.checkStates.filter(Boolean).length;const tot=p.tasks.length;
+    const pct=Math.round(p.progress);const isActive=pct>0&&pct<100;const isDone=pct>=100;
+    return`<div class="phase-item">
+      <div class="phase-header">
+        <div class="phase-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color};margin-right:7px;"></span>${p.name}</div>
+        <div class="phase-status-badge ${isDone?'psb-done':isActive?'psb-active':'psb-pending'}">${isDone?'已完成':isActive?`进行中 ${pct}%`:'待开始'}</div>
+      </div>
+      <div class="phase-bar-wrap"><div class="phase-bar" style="width:${pct}%;background:${p.color};"></div></div>
+      <div class="phase-meta"><span>${done}/${tot} 项完成</span><span>预计 ${p.weeks} 周</span></div>
+      ${p.note?`<div class="phase-note">${p.note}</div>`:''}
+      <button class="phase-toggle" onclick="togglePhase(${pi})">${p.expanded?'收起详情 ▲':'展开工序 ▼'}</button>
+      ${p.expanded?`<div class="phase-checklist">${p.tasks.map((t,ti)=>`<label class="phase-check${p.checkStates[ti]?' done-item':''}"><input type="checkbox" ${p.checkStates[ti]?'checked':''} onchange="toggleTask(${pi},${ti},this.checked)"><span>${t}</span></label>`).join('')}
+      <input type="text" placeholder="添加施工备注..." value="${p.note}" onchange="setNote(${pi},this.value)" style="width:100%;margin-top:5px;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text2);font-size:.65rem;padding:4px 0;font-family:'Noto Sans SC',sans-serif;">
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+function togglePhase(i){phaseData[i].expanded=!phaseData[i].expanded;renderPhases();}
+function toggleTask(pi,ti,val){phaseData[pi].checkStates[ti]=val;updatePhaseProgress();renderPhases();}
+function setNote(pi,val){phaseData[pi].note=val;}
+
+// ===== SAVED SCHEMES =====
+function loadSchemes(){try{const s=localStorage.getItem('zhuju_schemes');if(s)schemes=JSON.parse(s);}catch(e){schemes=[];}}
+function saveToStorage(){try{localStorage.setItem('zhuju_schemes',JSON.stringify(schemes));}catch(e){}}
+function saveScheme(){
+  if(!isPro&&schemes.length>=1){showToast('免费版最多保存1个方案，升级PRO无限保存');if(schemes.length>=1){openSaveModal();return;}return;}
+  openSaveModal();
+}
+function openSaveModal(){
+  const{fp,tot,grand}=calc();
+  document.getElementById('schemeName').value='方案'+(schemes.length+1)+'号';
+  document.getElementById('save-summary').textContent=`${S.f}层·${tot}㎡·${fmtW(grand)}`;
+  document.getElementById('saveModal').style.display='flex';
+  setTimeout(()=>document.getElementById('schemeName').focus(),100);
+}
+function confirmSave(){
+  const name=document.getElementById('schemeName').value.trim()||'未命名方案';
+  const{fp,tot,grand,unit}=calc();
+  schemes.push({id:Date.now(),name,state:{...S},fp,tot,grand,unit,date:new Date().toLocaleDateString('zh-CN')});
+  saveToStorage();
+  document.getElementById('saveModal').style.display='none';
+  showToast('方案「'+name+'」已保存');
+  renderSchemes();
+}
+function deleteScheme(id){schemes=schemes.filter(s=>s.id!==id);saveToStorage();renderSchemes();}
+function loadScheme(id){const s=schemes.find(sc=>sc.id===id);if(!s)return;Object.assign(S,s.state);document.getElementById('s-w').value=S.w;document.getElementById('s-d').value=S.d;document.getElementById('s-f').value=S.f;document.getElementById('s-h').value=S.h;['brick','frame','light'].forEach(k=>document.getElementById('st-'+k).classList.toggle('active',k===S.struct));['simple','chinese','european'].forEach(k=>document.getElementById('sy-'+k).classList.toggle('active',k===S.style));['flat','slope','hip'].forEach(k=>document.getElementById('ro-'+k).classList.toggle('active',k===S.roof));['basic','mid','high'].forEach(k=>document.getElementById('dc-'+k).classList.toggle('active',k===S.decor));['north','east','south','west'].forEach(k=>document.getElementById('rg-'+k).classList.toggle('active',k===S.region));onInput();navTo('design');showToast('已载入方案「'+s.name+'」');}
+function toggleCompare(id){if(selectedSchemes.includes(id)){selectedSchemes=selectedSchemes.filter(i=>i!==id);}else{if(selectedSchemes.length>=3){showToast('最多同时对比3个方案');return;}selectedSchemes.push(id);}renderSchemes();}
+function renderSchemes(){
+  if(!document.getElementById('schemesList'))return;
+  if(schemes.length===0){document.getElementById('schemesList').innerHTML=`<div style="text-align:center;padding:2rem 1rem;color:var(--text3);font-size:.72rem;line-height:1.8;">暂无保存方案<br>点击上方按钮将当前设计存入收藏</div>`;return;}
+  document.getElementById('schemesList').innerHTML=schemes.map(sc=>`<div class="scheme-card" style="${selectedSchemes.includes(sc.id)?'border-color:var(--gold);':''}" >
+    <button class="scheme-delete" onclick="deleteScheme(${sc.id})">×</button>
+    <div class="scheme-name">${sc.name}</div>
+    <div class="scheme-meta">${sc.date} · ${sc.state.f}层 · ${{simple:'简约现代',chinese:'新中式',european:'欧式'}[sc.state.style]} · ${sc.state.region==='north'?'华北':sc.state.region==='east'?'华东':sc.state.region==='south'?'华南':'西部'}</div>
+    <div class="scheme-metrics">
+      <div class="sm-item"><div class="sm-val">${sc.tot}㎡</div><div class="sm-lbl">建筑面积</div></div>
+      <div class="sm-item"><div class="sm-val">${fmtW(sc.grand)}</div><div class="sm-lbl">预计造价</div></div>
+      <div class="sm-item"><div class="sm-val">${fmt(sc.unit)}元</div><div class="sm-lbl">综合单价/㎡</div></div>
+    </div>
+    <div class="scheme-btns">
+      <button class="scheme-btn primary" onclick="loadScheme(${sc.id})">载入方案</button>
+      <button class="scheme-btn${selectedSchemes.includes(sc.id)?' primary':''}" onclick="toggleCompare(${sc.id})">${selectedSchemes.includes(sc.id)?'✓ 已选对比':'加入对比'}</button>
+    </div>
+  </div>`).join('');
+  if(selectedSchemes.length>=2){const cb=document.getElementById('schemesContent');if(!cb.querySelector('.compare-bar')){const bar=document.createElement('div');bar.className='compare-bar';bar.innerHTML=`<span>已选 ${selectedSchemes.length} 个方案</span><button class="compare-btn" onclick="openCompare()">对比方案</button>`;cb.appendChild(bar);}}else{const bar=document.getElementById('schemesContent').querySelector('.compare-bar');if(bar)bar.remove();}
+}
+function openCompare(){
+  if(!isPro){showToast('升级PRO解锁方案对比功能');return;}
+  const sel=schemes.filter(s=>selectedSchemes.includes(s.id));
+  const rows=[['建筑面积','tot','㎡'],['总造价','grand','fmtW'],['综合单价','unit','fmt+元/㎡'],['宅基地','w_d',''],['层数','f','层'],['结构','struct',''],['风格','style',''],['装修','decor',''],['地区','region','']];
+  const labels={brick:'砖混',frame:'框架',light:'轻钢',simple:'简约现代',chinese:'新中式',european:'欧式',basic:'简装',mid:'中装',high:'精装',north:'华北',east:'华东',south:'华南',west:'西部'};
+  let html=`<div style="overflow-x:auto;"><table class="compare-table"><thead><tr><th>指标</th>${sel.map(s=>`<th>${s.name}</th>`).join('')}</tr></thead><tbody>`;
+  rows.forEach(([label,key,unit],ri)=>{
+    html+=`<tr class="${ri%2===0?'highlight':''}"><td style="color:var(--text3);">${label}</td>`;
+    sel.forEach(s=>{
+      let v='';
+      if(key==='tot')v=s.tot+'㎡';
+      else if(key==='grand')v=fmtW(s.grand);
+      else if(key==='unit')v=fmt(s.unit)+'元/㎡';
+      else if(key==='w_d')v=s.state.w+'×'+s.state.d+'m';
+      else if(key==='f')v=s.state.f+'层';
+      else v=labels[s.state[key]]||s.state[key];
+      html+=`<td>${v}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('compareContent').innerHTML=html;
+  document.getElementById('compareModal').style.display='flex';
+}
+
+// ===== AI CHAT =====
+const AI_KNOWLEDGE={
+  '框架结构':['框架结构（RC框架）是农村自建房的主流选择，特别是2层以上建筑。优点：空间灵活、抗震性能好、使用寿命长（50年以上）。造价比砖混高约15-20%，约950-1100元/㎡（华东地区）。\n\n建议：宅基地面积超过100㎡、层数≥2层时，强烈推荐框架结构。'],
+  '砖混结构':['砖混结构适合1-2层简单建筑，造价最低（约800-900元/㎡）。但抗震性弱于框架，房间布局不够灵活，且承重墙不能随意拆除。在地震设防烈度7度及以上地区，2层以上建议优先选框架结构。'],
+  '造价控制':['控制自建房造价的核心方法：\n1. 合理控制建筑面积，多余面积是最大浪费\n2. 主体结构不省钱（框架、防水），装修可分期进行\n3. 本地建材比外采便宜10-15%\n4. 找有资质的施工队，避免返工损失\n5. 精装修可预留毛坯先住，后续再装修\n6. 屋顶防水一次做好，SBS改性沥青卷材性价比最高'],
+  '审批':['农村自建房审批流程（2024年后统一纳入"乡村建设审批"）：\n1. 向村委会提交申请（提供建房申请书、户口本、土地证）\n2. 村委会公示7个工作日\n3. 乡镇人民政府审核（提交设计方案）\n4. 领取《乡村建设规划许可证》\n5. 开工前10日通知乡镇备案\n6. 完工后申请竣工验收\n\n注意：未取得许可证擅自建房属违建，可能面临拆除。'],
+  '防水':['屋顶防水是自建房最关键的工序之一，推荐做法：\n1. 结构层（C25混凝土，最少100mm厚）\n2. 找坡层（轻集料混凝土找1-3%坡）\n3. 隔汽层（PE膜）\n4. 保温层（挤塑聚苯板，最少80mm）\n5. SBS改性沥青防水卷材（两道，总厚≥6mm）\n6. 保护层（细石混凝土40mm，配φ4@150筋）\n\n坡屋顶可选沥青瓦或琉璃瓦，使用寿命25-30年。'],
+  '地基':['农村自建房地基选型依据地质条件：\n· 一般土质（承载力≥80kPa）：条形基础，宽度600-800mm，深度1.2-1.5m\n· 软弱土层：筏板基础或桩基础（需专业地质勘察）\n· 坡地建房：毛石挡土墙+阶梯式基础\n\n地基施工注意：验槽（看地质是否符合设计）→素混凝土垫层→防潮层必做（1:2水泥砂浆+防水剂）'],
+};
+function initChat(){
+  const msgs=document.getElementById('chatMessages');
+  msgs.innerHTML=`<div class="chat-msg"><div class="msg-avatar avatar-ai">筑</div><div><div class="msg-bubble bubble-ai">您好！我是筑居 AI 建筑顾问，专注农村自建房领域。<br><br>可以问我关于：结构选型、造价控制、施工工艺、审批流程、防水处理、地基设计等任何问题。<br><br>您当前方案为 ${S.f}层${S.w}×${S.d}m ${S.struct==='frame'?'框架':'砖混'}结构，有什么需要咨询的吗？</div><div class="msg-time">刚刚</div></div></div>`;
+}
+function sendQuick(q){document.getElementById('chatInput').value=q;sendChat();}
+function chatKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function sendChat(){
+  const inp=document.getElementById('chatInput');const q=inp.value.trim();if(!q)return;
+  const msgs=document.getElementById('chatMessages');
+  inp.value='';
+  msgs.innerHTML+=`<div class="chat-msg user"><div class="msg-avatar avatar-user">我</div><div><div class="msg-bubble bubble-user">${q}</div><div class="msg-time" style="text-align:right;">刚刚</div></div></div>`;
+  // Typing indicator
+  const tid='typing-'+Date.now();
+  msgs.innerHTML+=`<div class="chat-msg" id="${tid}"><div class="msg-avatar avatar-ai">筑</div><div class="msg-bubble bubble-ai"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  // Generate response
+  setTimeout(()=>{
+    const resp=genAIResponse(q);
+    document.getElementById(tid).outerHTML=`<div class="chat-msg"><div class="msg-avatar avatar-ai">筑</div><div><div class="msg-bubble bubble-ai">${resp.replace(/\n/g,'<br>')}</div><div class="msg-time">刚刚</div></div></div>`;
+    msgs.scrollTop=msgs.scrollHeight;
+  },900+Math.random()*600);
+}
+function genAIResponse(q){
+  const q2=q.toLowerCase();
+  for(const[key,answers] of Object.entries(AI_KNOWLEDGE)){if(q2.includes(key.toLowerCase()))return answers[0];}
+  const{grand,tot,fp}=calc();
+  if(q2.includes('造价')||q2.includes('多少钱')||q2.includes('费用'))return`根据您当前的方案参数（${S.f}层·${S.w}×${S.d}m·${S.struct==='frame'?'框架':'砖混'}·${S.decor==='basic'?'简装':S.decor==='mid'?'中装':'精装'}），预计总造价约 ${fmtW(grand)}，综合单价 ${fmt(grand/tot)} 元/㎡。\n\n造价主要影响因素：① 装修档次（差异可达30%）② 结构形式（轻钢最高）③ 所在地区（华东最高）④ 建材选型。\n\n建议主体结构不省，装修可后期分批投入。`;
+  if(q2.includes('面积')||q2.includes('多大'))return`您的宅基地 ${S.w}×${S.d}=${S.w*S.d}㎡，去掉退线后建筑占地约 ${fp}㎡，${S.f}层总建筑面积约 ${tot}㎡。\n\n农村宅基地一般不超过 167㎡（1/4亩），建筑密度建议控制在 60% 以内，为院落和绿化保留空间。`;
+  if(q2.includes('层数')||q2.includes('几层'))return`您当前设计为 ${S.f} 层，推荐意见：\n· 1层：适合老人独居，造价最省，但土地利用率低\n· 2层：最常见，性价比最高，满足三代同堂\n· 3层：适合大家庭，但造价增加约35%，且层高限制（总高≤12m）\n\n${S.f}层方案总建筑面积 ${tot}㎡，适合 ${S.f<=1?2:S.f<=2?4:6}-${S.f<=1?3:S.f<=2?6:8} 人居住。`;
+  if(q2.includes('风水')||q2.includes('朝向'))return`建筑朝向是影响采光、通风、冬暖夏凉的关键：\n\n· 坐北朝南（最佳）：冬季南向获得充足阳光，夏季南风穿堂，节能效果最好\n· 正南偏东15°以内：可接受范围\n· 避免正西朝向：夏季西晒严重，室内过热\n\n建议：主卧、客厅尽量安排在南侧，厨房、卫生间可在北侧。您当前方案若宅基地地势允许，可优先选择南北向布局。`;
+  return`感谢您的提问！关于"${q}"，这涉及具体设计细节。建议您结合当地施工队的实际经验，因为农村建房受地区差异影响较大。\n\n您也可以问我：结构选型建议、造价控制、防水工艺、地基设计、审批流程等具体问题，我会提供详细解答。`;
+}
+
+// ===== SPEC / REGULATION =====
+function renderSpec(){
+  const{fp,tot,bw,bd}=calc();
+  const sNames={brick:'砖混结构（240mm砖墙+圈梁）',frame:'框架结构（C30混凝土+HRB400）',light:'轻钢结构（镀锌型钢框架）'};
+  const roofN={flat:'平屋顶（防水找坡层）',slope:'双坡屋顶（沥青瓦/琉璃瓦）',hip:'四坡屋顶（琉璃瓦）'};
+  document.getElementById('specRows').innerHTML=[
+    ['结构体系',sNames[S.struct]],['抗震设防','7度（0.10g）Ⅱ类场地'],
+    ['基础形式',S.struct==='light'?'独立基础+地梁':'条形基础+防潮层（1:2防水砂浆）'],
+    ['墙体材料',S.struct==='brick'?'实心砖/多孔砖（240mm）':S.struct==='frame'?'加气混凝土块（200mm）':'轻钢龙骨+复合板'],
+    ['屋顶形式',roofN[S.roof]],['层高净高',`${S.h}m（净高约 ${(S.h-0.2).toFixed(1)}m）`],
+    ['门窗材料',S.decor==='basic'?'铝合金单层玻璃':S.decor==='mid'?'断桥铝双层中空玻璃':'系统门窗三层Low-E玻璃'],
+    ['供暖方式',S.region==='north'?'地暖+铝制散热器':'分体空调+局部地暖'],
+    ['总建筑面积',`${tot.toFixed(0)}㎡（共 ${S.f} 层，每层约 ${(fp).toFixed(0)}㎡）`],
+  ].map(([l,v])=>`<div class="spec-row"><span class="sr-label">${l}</span><span class="sr-val">${v}</span></div>`).join('');
+  document.getElementById('matRows').innerHTML=[
+    {n:'水泥',v:Math.round(fp*S.f*0.35),u:'吨',p:65},
+    {n:'钢筋',v:Math.round(tot*(S.struct==='frame'?45:25)),u:'kg',p:75},
+    {n:'砌块',v:Math.round(tot*0.5*85),u:'块',p:80},
+    {n:'砂石料',v:Math.round(tot*0.8),u:'吨',p:55},
+    {n:'防水卷材',v:Math.round(fp*1.3),u:'㎡',p:42},
+    {n:'木材',v:Math.round(tot*0.08),u:'m³',p:30},
+  ].map(m=>`<div class="mat-spec-row"><span class="msn">${m.n}</span><div class="msb"><div class="msbf" style="width:${m.p}%;"></div></div><span class="msv">${m.v.toLocaleString()} ${m.u}</span></div>`).join('');
+  const sched=[{ph:'地基基础',w:4},{ph:'主体结构',w:S.f*6},{ph:'屋面防水',w:2},{ph:'门窗安装',w:2},{ph:'水电预埋',w:3},{ph:'室内装修',w:S.decor==='basic'?6:S.decor==='mid'?10:14},{ph:'验收交付',w:1}];
+  const totW=sched.reduce((a,s)=>a+s.w,0);
+  document.getElementById('schedRows').innerHTML=sched.map(s=>`<div class="mat-spec-row"><span class="msn">${s.ph}</span><div class="msb"><div class="msbf" style="width:${s.w/totW*100}%;background:#5a9966;"></div></div><span class="msv">${s.w} 周</span></div>`).join('')+`<div class="spec-row" style="border-top:1px solid var(--border);margin-top:4px;"><span class="sr-label" style="color:var(--gold);">预计总工期</span><span class="sr-val" style="color:var(--gold);">约 ${totW} 周（${Math.round(totW/4.3)} 个月）</span></div>`;
+  // Regulation check
+  const checks=[
+    {label:'宅基地面积',val:S.w*S.d,limit:167,unit:'㎡',pass:S.w*S.d<=167,note:'≤167㎡（1/4亩）'},
+    {label:'建筑总高',val:+(S.f*S.h).toFixed(1),limit:12,unit:'m',pass:S.f*S.h<=12,note:'≤12m（3层限制）'},
+    {label:'建筑密度',val:+(fp/S.w/S.d*100).toFixed(0),limit:60,unit:'%',pass:fp/S.w/S.d<=0.6,note:'建议≤60%'},
+    {label:'最小净高',val:+(S.h-0.2).toFixed(1),limit:2.4,unit:'m',pass:S.h-0.2>=2.4,note:'≥2.4m（住规要求）'},
+    {label:'层数限制',val:S.f,limit:3,unit:'层',pass:S.f<=3,note:'农村≤3层'},
+  ];
+  document.getElementById('regulationCheck').innerHTML=checks.map(c=>`<div class="spec-row"><span class="sr-label">${c.label}</span><div style="display:flex;align-items:center;gap:8px;"><span class="sr-val">${c.val}${c.unit}</span><span style="font-size:.62rem;padding:1px 7px;border-radius:10px;${c.pass?'background:rgba(90,170,122,.15);color:#5aaa7a;border:1px solid rgba(90,170,122,.3);':'background:rgba(200,90,58,.15);color:#c85a3a;border:1px solid rgba(200,90,58,.3);'}">${c.pass?'✓ 合规':'⚠ 超限'}</span></div></div>`).join('');
+}
+
+// ===== MAIN UPDATE =====
+function update(){
+  const{fp,tot,bw,bd,unit,grand,items}=calc();
+  S.bw=bw;S.bd=bd;
+  ['m-fp','m-tot','m-far','m-den'].forEach((id,i)=>{
+    document.getElementById(id).textContent=[fp.toFixed(0),tot.toFixed(0),(tot/(S.w*S.d)).toFixed(2),(fp/(S.w*S.d)*100).toFixed(0)+'%'][i];
+  });
+  let ftHtml='';for(let i=1;i<=S.f;i++)ftHtml+=`<button class="floor-tab${i===curFloor?' active':''}" onclick="setFloor(${i})">第${i}层</button>`;
+  document.getElementById('floorTabs').innerHTML=ftHtml;
+  const at=document.querySelector('.dtab-content.active');
+  if(at&&at.id==='dtab-floorplan')setTimeout(drawPlan,10);
+  if(at&&at.id==='dtab-effects')setTimeout(()=>{if(curView==='exterior')drawExterior();else if(curView==='sunlight')drawSunlight();else drawInterior();},10);
+  if(at&&at.id==='dtab-drawings')setTimeout(()=>DT.forEach(d=>drawThumb(d.id)),10);
+  // Cost
+  document.getElementById('t-total').textContent=fmtW(grand);
+  document.getElementById('t-unit').textContent='综合单价 '+fmt(unit)+' 元/㎡';
+  const cats=[...new Set(items.map(i=>i.cat))];
+  const catTotals=cats.map(c=>({cat:c,total:items.filter(i=>i.cat===c).reduce((a,i)=>a+i.s,0)}));
+  const maxC=Math.max(...catTotals.map(c=>c.total));
+  const catClrs={主体结构:'#d4b47a',装修工程:'#5a9966',水电工程:'#4A7FB5',其他费用:'#8a5a3a'};
+  document.getElementById('costBars').innerHTML=catTotals.map(ct=>`<div class="cost-bar-row"><div class="cbr-label">${ct.cat}</div><div class="cbr-bar-wrap"><div class="cbr-bar" style="width:${ct.total/maxC*100}%;background:${catClrs[ct.cat]||'#8a5a3a'};"></div></div><div class="cbr-val">${fmtW(ct.total)}</div></div>`).join('');
+  let listHtml='';
+  cats.forEach(cat=>{const ci=items.filter(i=>i.cat===cat),ct=ci.reduce((a,i)=>a+i.s,0);listHtml+=`<div class="cost-group-title"><span>${cat}</span><span>${fmtW(ct)}</span></div>`;ci.forEach(it=>listHtml+=`<div class="cost-item"><div><div class="ci-name">${it.name}</div><div class="ci-qty">${it.qty}${it.u} × ${fmt(it.p)}元</div></div><div class="ci-amount">${fmt(it.s)}元</div></div>`);});
+  listHtml+=`<div class="cost-item" style="border-top:1px solid var(--border2);margin-top:8px;padding-top:10px;"><div class="ci-name" style="font-size:.82rem;font-weight:500;color:var(--gold);">工程总造价</div><div class="ci-amount" style="font-size:.82rem;color:var(--gold);">${fmt(grand)}元</div></div>`;
+  document.getElementById('costList').innerHTML=listHtml;
+  if(costView==='chart')drawPie();
+  if(costView==='material')renderMatCompare();
+  renderSpec();
+  if(document.getElementById('page-schedule').classList.contains('active'))renderPhases();
+}
+function setFloor(n){curFloor=n;update();}
+function upgradePro(){showToast('开通PRO即可解锁全部功能');setTimeout(()=>{purchase();},100);}
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+// Init
+window.addEventListener('load',()=>{drawPWCanvas();});
+window.addEventListener('resize',()=>{
+  if(document.getElementById('app').style.display!=='none'){
+    const at=document.querySelector('.dtab-content.active');
+    if(at){setTimeout(()=>{if(at.id==='dtab-floorplan')drawPlan();else if(at.id==='dtab-effects'){if(curView==='exterior')drawExterior();else if(curView==='sunlight')drawSunlight();else drawInterior();}},50);}
+  }
+});
+</script>
+</body>
+</html>
